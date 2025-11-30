@@ -11,6 +11,7 @@ export default class ClassroomScene extends Phaser.Scene {
 
         this.createBackground(width, height);
         this.createMonitor(width, height);
+        this.createDoor(width, height);
 
 
         this.scale.on('resize', this.handleResize, this);
@@ -144,6 +145,107 @@ export default class ClassroomScene extends Phaser.Scene {
         );
         powerLED.setBlendMode(Phaser.BlendModes.ADD);
 
+    }
+
+    private createDoor(width: number, height: number) {
+        const doorX = width * 0.8;
+        const doorY = height * 0.55;
+        const doorWidth = width * 0.18;
+        const doorHeight = height * 0.5;
+        const keypadX = doorX + doorWidth * 0.77;
+        const keypadY = doorY - height * 0.05;
+
+        const door = this.add.rectangle(
+            doorX,
+            doorY,
+            doorWidth,
+            doorHeight,
+            0x607d8b
+        );
+
+        const frame = this.add.rectangle(
+            doorX,
+            doorY,
+            doorWidth,
+            doorHeight
+        );
+        frame.setStrokeStyle(width * 0.004, 0x37474f);
+
+        for (let i = 0; i < 13; i++) {
+            const rivetL = this.add.circle(
+                doorX - doorWidth * 0.45,
+                doorY - doorHeight * 0.45 + (i * doorHeight * 0.075),
+                width * 0.004,
+                0x546e7a
+            );
+            rivetL.setStrokeStyle(width * 0.001, 0x37474f);
+        }
+
+        for (let i = 0; i < 13; i++) {
+            const rivetR = this.add.circle(
+                doorX + doorWidth * 0.45,
+                doorY - doorHeight * 0.45 + (i * doorHeight * 0.075),
+                width * 0.004,
+                0x546e7a
+            );
+            rivetR.setStrokeStyle(width * 0.001, 0x37474f);
+        }
+
+
+        const label = this.add.rectangle(
+            doorX,
+            doorY - doorHeight * 0.35,
+            doorWidth * 0.66,
+            height * 0.025,
+            0xfacc15
+        );
+
+        const labelText = this.add.text(
+            doorX,
+            doorY - doorHeight * 0.35,
+            'AUTHORIZED PERSONNEL ONLY',
+            {
+                fontSize: `${width * 0.007}px`,
+                color: '#000000'
+            }
+        ).setOrigin(0.5);
+
+        const windowRect = this.add.rectangle(
+            doorX,
+            doorY - doorHeight * 0.2,
+            doorWidth * 0.65,
+            height * 0.1,
+            0x1a237e,
+            0.4
+        );
+        windowRect.setStrokeStyle(width * 0.003, 0x37474f);
+
+        const graphics = this.add.graphics();
+        graphics.lineStyle(1, 0x263238, 0.3);
+
+        for (let i = 0; i < 8; i++) {
+            const y = doorY - doorHeight * 0.25 + (i * height * 0.0125);
+            graphics.lineBetween(
+                doorX - doorWidth * 0.325,
+                y,
+                doorX + doorWidth * 0.325,
+                y
+            );
+        }
+
+        for (let i = 0; i < 12; i++) {
+            const x = doorX - doorWidth * 0.325 + (i * doorWidth * 0.054);
+            graphics.lineBetween(
+                x,
+                doorY - doorHeight * 0.25,
+                x,
+                doorY - doorHeight * 0.15
+            );
+        }
+
+        const hinge1 = this.add.rectangle(doorX - doorWidth * 0.5, doorY - doorHeight * 0.3, width * 0.005, height * 0.02, 0x616161);
+        const hinge2 = this.add.rectangle(doorX - doorWidth * 0.5, doorY, width * 0.005, height * 0.02, 0x616161);
+        const hinge3 = this.add.rectangle(doorX - doorWidth * 0.5, doorY + doorHeight * 0.3, width * 0.005, height * 0.02, 0x616161);
     }
 
 
