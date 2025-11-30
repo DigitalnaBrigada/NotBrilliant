@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 
 export default class ClassroomScene extends Phaser.Scene {
+    private keypadButton?: Phaser.GameObjects.Rectangle;
+    
     constructor() {
         super({key: 'ClassroomScene'});
     }
@@ -246,8 +248,93 @@ export default class ClassroomScene extends Phaser.Scene {
         const hinge1 = this.add.rectangle(doorX - doorWidth * 0.5, doorY - doorHeight * 0.3, width * 0.005, height * 0.02, 0x616161);
         const hinge2 = this.add.rectangle(doorX - doorWidth * 0.5, doorY, width * 0.005, height * 0.02, 0x616161);
         const hinge3 = this.add.rectangle(doorX - doorWidth * 0.5, doorY + doorHeight * 0.3, width * 0.005, height * 0.02, 0x616161);
+
+        const conduitStartX = doorX + doorWidth * 0.5;
+        const conduitEndX = keypadX - width * 0.04;
+        const conduitY = keypadY;
+
+        const conduit = this.add.rectangle(
+            (conduitStartX + conduitEndX) / 2,
+            conduitY,
+            conduitEndX - conduitStartX,
+            height * 0.008,
+            0x757575
+        );
+
+        const wireGraphics = this.add.graphics();
+        wireGraphics.lineStyle(2, 0xd32f2f);
+        wireGraphics.lineBetween(conduitStartX, conduitY - height * 0.005, conduitEndX, conduitY - height * 0.005);
+
+        wireGraphics.lineStyle(2, 0x0288d1);
+        wireGraphics.lineBetween(conduitStartX, conduitY, conduitEndX, conduitY);
+
+        wireGraphics.lineStyle(2, 0x388e3c);
+        wireGraphics.lineBetween(conduitStartX, conduitY + height * 0.005, conduitEndX, conduitY + height * 0.005);
+
+        this.createKeypad(keypadX, keypadY, width, height);
     }
 
+    private createKeypad(x: number, y: number, width: number, height: number) {
+        const keypadWidth = width * 0.08;
+        const keypadHeight = height * 0.18;
+
+        this.keypadButton = this.add.rectangle(
+            x,
+            y,
+            keypadWidth,
+            keypadHeight,
+            0x37474f
+        );
+        this.keypadButton.setStrokeStyle(width * 0.003, 0x263238);
+        this.keypadButton.setInteractive({useHandCursor: true});
+
+        const brandText = this.add.text(
+            x,
+            y - keypadHeight * 0.42,
+            'SecureAccess 3000',
+            {
+                fontSize: `${width * 0.005}px`,
+                color: '#d1d5db'
+            }
+        ).setOrigin(0.5);
+
+        const buttonSize = width * 0.015;
+        const gap = width * 0.005;
+        const startY = y - keypadHeight * 0.15;
+
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                const num = row * 3 + col + 1;
+                const btnX = x - buttonSize - gap + col * (buttonSize + gap);
+                const btnY = startY + row * (buttonSize + gap);
+
+                const btn = this.add.rectangle(btnX, btnY, buttonSize, buttonSize, 0x424242);
+                btn.setStrokeStyle(width * 0.001, 0x212121);
+
+                const btnText = this.add.text(btnX, btnY, num.toString(), {
+                    fontSize: `${width * 0.008}px`,
+                    color: '#ffffff'
+                }).setOrigin(0.5);
+            }
+        }
+
+        const led1 = this.add.circle(x - width * 0.005, y + keypadHeight * 0.45, width * 0.002, 0xdc2626);
+        led1.setBlendMode(Phaser.BlendModes.ADD);
+
+        const led2 = this.add.circle(x + width * 0.005, y + keypadHeight * 0.45, width * 0.002, 0x4b5563);
+
+        this.keypadButton.on('pointerdown', () => {
+            this.showModal();
+        });
+
+        this.keypadButton.on('pointerover', () => {
+            this.keypadButton?.setFillStyle(0x455a64);
+        });
+
+        this.keypadButton.on('pointerout', () => {
+            this.keypadButton?.setFillStyle(0x37474f);
+        });
+    }
 
     private handleResize() {
         this.scene.restart();
