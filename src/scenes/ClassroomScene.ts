@@ -2,7 +2,23 @@ import Phaser from 'phaser';
 
 export default class ClassroomScene extends Phaser.Scene {
     private keypadButton?: Phaser.GameObjects.Rectangle;
-    
+    private latexElement?: HTMLDivElement;
+
+    private mathProblems = [
+        {
+            problem: '\\int_1^6 (12x^3 - 9x^2 + 2) \\, dx',
+            question: '',
+            hints: [
+                '\\int (f(x) + g(x)) \\, dx = \\int f(x) \\, dx + \\int g(x) \\, dx',
+                '\\int x^n \\, dx = \\frac{x^{n+1}}{n+1}'
+            ],
+            correctAnswer: '123456',
+            size: 0.025
+        }
+    ];
+
+    private currentProblemIndex: number = 0;
+
     constructor() {
         super({key: 'ClassroomScene'});
     }
@@ -10,6 +26,12 @@ export default class ClassroomScene extends Phaser.Scene {
     create() {
         const width = this.scale.width;
         const height = this.scale.height;
+
+        if (!this.latexElement) {
+            this.createLatexDisplay(width, height);
+        } else {
+            this.updateLatexPosition(width, height);
+        }
 
         this.createBackground(width, height);
         this.createMonitor(width, height);
@@ -335,6 +357,90 @@ export default class ClassroomScene extends Phaser.Scene {
             this.keypadButton?.setFillStyle(0x37474f);
         });
     }
+
+    private createLatexDisplay(width: number, height: number) {
+        this.latexElement = document.createElement('div');
+        this.latexElement.style.position = 'absolute';
+        this.latexElement.style.left = `${width * 0.25}px`;
+        this.latexElement.style.top = `${height * 0.25}px`;
+        this.latexElement.style.width = `${width * 0.32}px`;
+        this.latexElement.style.height = `${height * 0.32}px`;
+        this.latexElement.style.transform = 'translate(-50%, -50%)';
+        this.latexElement.style.display = 'flex';
+        this.latexElement.style.flexDirection = 'column';
+        this.latexElement.style.alignItems = 'center';
+        this.latexElement.style.justifyContent = 'center';
+        this.latexElement.style.color = 'rgba(255, 255, 255, 0.9)';
+        this.latexElement.style.fontSize = `${width * this.mathProblems[this.currentProblemIndex].size}px`;
+        this.latexElement.style.pointerEvents = 'none';
+        this.latexElement.innerHTML = `
+            <div id="latex-content">
+                \\[${this.mathProblems[this.currentProblemIndex].problem}\\]
+
+                ${
+            this.mathProblems[this.currentProblemIndex].question !== ''
+                ? `\\[${this.mathProblems[this.currentProblemIndex].question}\\]`
+                : ''
+        }
+            </div>
+        `;
+
+        document.body.appendChild(this.latexElement);
+
+        if (!(window as any).MathJax) {
+            (window as any).MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                },
+                startup: {
+                    pageReady: () => {
+                        return (window as any).MathJax.startup.defaultPageReady();
+                    }
+                }
+            };
+
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+            script.async = true;
+            document.head.appendChild(script);
+        } else {
+            setTimeout(() => {
+                if ((window as any).MathJax?.typesetPromise) {
+                    (window as any).MathJax.typesetPromise([this.latexElement]);
+                }
+            }, 100);
+        }
+    }
+
+    private updateLatexPosition(width: number, height: number) {
+        if (this.latexElement) {
+            this.latexElement.style.left = `${width * 0.25}px`;
+            this.latexElement.style.top = `${height * 0.25}px`;
+            this.latexElement.style.width = `${width * 0.32}px`;
+            this.latexElement.style.height = `${height * 0.32}px`;
+            this.latexElement.style.fontSize = `${width * this.mathProblems[this.currentProblemIndex].size}px`;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private handleResize() {
         this.scene.restart();
