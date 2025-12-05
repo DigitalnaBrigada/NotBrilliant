@@ -1,23 +1,14 @@
 import Phaser from 'phaser';
+import {generateMathProblems} from "../utils/mathProblemsGenerator";
 
 export default class ClassroomScene extends Phaser.Scene {
     private keypadButton?: Phaser.GameObjects.Rectangle;
     private latexElement?: HTMLDivElement;
 
-    private mathProblems = [
-        {
-            problem: '\\int_1^6 (12x^3 - 9x^2 + 2) \\, dx',
-            question: '',
-            hints: [
-                '\\int (f(x) + g(x)) \\, dx = \\int f(x) \\, dx + \\int g(x) \\, dx',
-                '\\int x^n \\, dx = \\frac{x^{n+1}}{n+1}'
-            ],
-            correctAnswer: '123456',
-            size: 0.025
-        }
-    ];
+    private mathProblems = generateMathProblems();
 
     private currentProblemIndex: number = 0;
+    private hintIndex: number = 0;
 
     constructor() {
         super({key: 'ClassroomScene'});
