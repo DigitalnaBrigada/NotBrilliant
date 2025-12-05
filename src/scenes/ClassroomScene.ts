@@ -571,7 +571,7 @@ export default class ClassroomScene extends Phaser.Scene {
             this.showMessage('Incorrect Password', '#ef4444');
             const currentHints = this.mathProblems[this.currentProblemIndex].hints;
             if (this.hintIndex < currentHints.length) {
-                console.log(currentHints[this.hintIndex]);
+                this.createStickyNote(currentHints[this.hintIndex]);
                 this.hintIndex++;
             }
             setTimeout(() => {
@@ -596,7 +596,75 @@ export default class ClassroomScene extends Phaser.Scene {
         }
     }
 
+    private createStickyNote(hint: string, x?: number, y?: number) {
+        const width = this.scale.width;
+        const height = this.scale.height;
 
+        const stickyX = x ?? Phaser.Math.Between(width * 0.5, width * 0.7);
+        const stickyY = y ?? Phaser.Math.Between(height * 0.4, height * 0.6);
+
+        const stickyNote = this.add.rectangle(
+            stickyX,
+            stickyY,
+            width * 0.1,
+            height * 0.1,
+            (this.hintIndex + 1) === this.mathProblems[this.currentProblemIndex].hints.length ? 0x22c55e : 0xfacc15,
+        );
+        stickyNote.setInteractive({useHandCursor: true});
+        stickyNote.setAngle(Phaser.Math.Between(-5, 5));
+
+        stickyNote.on('pointerdown', () => {
+            if (this.modalElement && this.modalElement.style.display === 'flex') {
+                return;
+            }
+            this.showHintModal(hint);
+        });
+
+        this.stickyNotes.push(stickyNote);
+    }
+
+    private showHintModal(hint: string) {
+        let hintModal = document.getElementById('hint-modal') as HTMLDivElement;
+        if (!hintModal) {
+            hintModal = document.createElement('div');
+            hintModal.id = 'hint-modal';
+            hintModal.style.position = 'fixed';
+            hintModal.style.inset = '0';
+            hintModal.style.display = 'flex';
+            hintModal.style.alignItems = 'center';
+            hintModal.style.justifyContent = 'center';
+            hintModal.style.background = 'rgba(0,0,0,0.5)';
+            hintModal.style.zIndex = '100';
+            hintModal.innerHTML = `
+            <div style="background: #111827; border-radius: 1rem; padding: 2rem; width: 400px; position: relative; color: white; text-align:center;">
+                <button id="hint-close-btn" style="position:absolute; top:10px; right:10px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">×</button>
+                <div id="hint-latex" style="margin-top:2rem; font-size:1.2rem;"></div>
+            </div>
+        `;
+            document.body.appendChild(hintModal);
+
+            const closeBtn = hintModal.querySelector('#hint-close-btn');
+            closeBtn?.addEventListener('click', () => this.hideHintModal());
+            hintModal.addEventListener('click', (e) => {
+                if (e.target === hintModal) this.hideHintModal();
+            });
+        }
+
+        const hintLatexEl = document.getElementById('hint-latex');
+        hintLatexEl.innerHTML = `\\[${hint}\\]`;
+
+
+        hintModal.style.display = 'flex';
+
+        if ((window as any).MathJax?.typesetPromise) {
+            (window as any).MathJax.typesetPromise([hintLatexEl]);
+        }
+    }
+
+    private hideHintModal() {
+        const hintModal = document.getElementById('hint-modal') as HTMLDivElement;
+        if (hintModal) hintModal.style.display = 'none';
+    }
 
 
 
