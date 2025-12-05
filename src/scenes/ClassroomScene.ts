@@ -4,11 +4,16 @@ import {generateMathProblems} from "../utils/mathProblemsGenerator";
 export default class ClassroomScene extends Phaser.Scene {
     private keypadButton?: Phaser.GameObjects.Rectangle;
     private latexElement?: HTMLDivElement;
+    private modalElement?: HTMLDivElement;
+    private pincode: string = '';
 
     private mathProblems = generateMathProblems();
 
     private currentProblemIndex: number = 0;
     private hintIndex: number = 0;
+
+    private stickyNotes: Phaser.GameObjects.Rectangle[] = [];
+    private stickyNoteMessages: HTMLDivElement[] = [];
 
     constructor() {
         super({key: 'ClassroomScene'});
@@ -22,6 +27,10 @@ export default class ClassroomScene extends Phaser.Scene {
             this.createLatexDisplay(width, height);
         } else {
             this.updateLatexPosition(width, height);
+        }
+
+        if (!this.modalElement) {
+            this.createModal();
         }
 
         this.createBackground(width, height);
@@ -414,8 +423,178 @@ export default class ClassroomScene extends Phaser.Scene {
         }
     }
 
+    private createModal() {
+        this.modalElement = document.createElement('div');
+        this.modalElement.style.position = 'fixed';
+        this.modalElement.style.inset = '0';
+        this.modalElement.style.zIndex = '50';
+        this.modalElement.style.display = 'none';
+        this.modalElement.style.alignItems = 'center';
+        this.modalElement.style.justifyContent = 'center';
+        this.modalElement.innerHTML = `
+      <div class="modal-backdrop" style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);"></div>
+      <div class="modal-content" style="position: relative; background: #111827; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); width: 400px; border: 4px solid #374151;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.5rem; border-bottom: 1px solid #374151;">
+          <h2 style="font-size: 1.5rem; color: white; margin: 0;">Enter Pincode</h2>
+          <button id="close-modal" style="color: #9ca3af; background: none; border: none; cursor: pointer; font-size: 1.5rem;">×</button>
+        </div>
+        <div style="padding: 1.5rem;">
+          <div style="background: #1f2937; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div id="pincode-display" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+              ${Array(6).fill(0).map((_, i) => `
+                <div class="pin-dot" data-index="${i}" style="width: 48px; height: 48px; border-radius: 0.5rem; border: 2px solid #4b5563; background: #374151; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #6b7280;"></div>
+              `).join('')}
+            </div>
+            <div id="message" style="text-align: center; margin-top: 0.5rem; display: none;"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+            ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => `
+              <button class="num-btn" data-num="${num}" style="background: #374151; color: white; font-size: 1.5rem; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">${num}</button>
+            `).join('')}
+            <button id="clear-btn" style="background: #dc2626; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">Clear</button>
+            <button class="num-btn" data-num="0" style="background: #374151; color: white; font-size: 1.5rem; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">0</button>
+            <button id="backspace-btn" style="background: #ca8a04; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">←</button>
+          </div>
+          <button id="submit-btn" style="width: 100%; background: #16a34a; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">Submit</button>
+        </div>
+      </div>
+    `;
 
+        document.body.appendChild(this.modalElement);
 
+        const closeBtn = this.modalElement.querySelector('#close-modal');
+        const backdrop = this.modalElement.querySelector('.modal-backdrop');
+        const numBtns = this.modalElement.querySelectorAll('.num-btn');
+        const clearBtn = this.modalElement.querySelector('#clear-btn');
+        const backspaceBtn = this.modalElement.querySelector('#backspace-btn');
+        const submitBtn = this.modalElement.querySelector('#submit-btn');
+
+        closeBtn?.addEventListener('click', () => this.hideModal());
+        backdrop?.addEventListener('click', () => this.hideModal());
+
+        numBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const num = btn.getAttribute('data-num');
+                if (num && this.pincode.length < 6) {
+                    this.pincode += num;
+                    this.updatePincodeDisplay();
+                }
+            });
+        });
+
+        clearBtn?.addEventListener('click', () => {
+            this.pincode = '';
+            this.updatePincodeDisplay();
+        });
+
+        backspaceBtn?.addEventListener('click', () => {
+            this.pincode = this.pincode.slice(0, -1);
+            this.updatePincodeDisplay();
+        });
+
+        submitBtn?.addEventListener('click', () => {
+            this.handleSubmit();
+        });
+
+        const allButtons = this.modalElement.querySelectorAll('button');
+        allButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                if (btn.classList.contains('num-btn')) {
+                    (btn as HTMLElement).style.background = '#4b5563';
+                } else if (btn.id === 'clear-btn') {
+                    (btn as HTMLElement).style.background = '#b91c1c';
+                } else if (btn.id === 'backspace-btn') {
+                    (btn as HTMLElement).style.background = '#a16207';
+                } else if (btn.id === 'submit-btn') {
+                    (btn as HTMLElement).style.background = '#15803d';
+                }
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                if (btn.classList.contains('num-btn')) {
+                    (btn as HTMLElement).style.background = '#374151';
+                } else if (btn.id === 'clear-btn') {
+                    (btn as HTMLElement).style.background = '#dc2626';
+                } else if (btn.id === 'backspace-btn') {
+                    (btn as HTMLElement).style.background = '#ca8a04';
+                } else if (btn.id === 'submit-btn') {
+                    (btn as HTMLElement).style.background = '#16a34a';
+                }
+            });
+        });
+    }
+
+    private showModal() {
+        if (this.modalElement) {
+            this.modalElement.style.display = 'flex';
+            this.pincode = '';
+            this.updatePincodeDisplay();
+            this.hideMessage();
+        }
+    }
+
+    private hideModal() {
+        if (this.modalElement) {
+            this.modalElement.style.display = 'none';
+        }
+    }
+
+    private updatePincodeDisplay() {
+        const dots = this.modalElement?.querySelectorAll('.pin-dot');
+        dots?.forEach((dot, index) => {
+            if (index < this.pincode.length) {
+                (dot as HTMLElement).style.background = '#3b82f6';
+                (dot as HTMLElement).style.borderColor = '#60a5fa';
+                (dot as HTMLElement).style.color = '#ffffff';
+                (dot as HTMLElement).textContent = '•';
+            } else {
+                (dot as HTMLElement).style.background = '#374151';
+                (dot as HTMLElement).style.borderColor = '#4b5563';
+                (dot as HTMLElement).style.color = '#6b7280';
+                (dot as HTMLElement).textContent = '';
+            }
+        });
+    }
+
+    private handleSubmit() {
+
+        if (this.pincode.length === 0) return;
+
+        if (this.pincode === this.mathProblems[this.currentProblemIndex].correctAnswer) {
+            this.showMessage('Access Granted! 🎉', '#22c55e');
+            this.latexElement?.remove();
+            this.time.delayedCall(5000, () => {
+                this.hideModal();
+                this.scene.start('MenuScene');
+            });
+        } else {
+            this.showMessage('Incorrect Password', '#ef4444');
+            const currentHints = this.mathProblems[this.currentProblemIndex].hints;
+            if (this.hintIndex < currentHints.length) {
+                console.log(currentHints[this.hintIndex]);
+                this.hintIndex++;
+            }
+            setTimeout(() => {
+                this.hideMessage();
+            }, 2000);
+        }
+    }
+
+    private showMessage(text: string, color: string) {
+        const messageEl = this.modalElement?.querySelector('#message') as HTMLElement;
+        if (messageEl) {
+            messageEl.textContent = text;
+            messageEl.style.color = color;
+            messageEl.style.display = 'block';
+        }
+    }
+
+    private hideMessage() {
+        const messageEl = this.modalElement?.querySelector('#message') as HTMLElement;
+        if (messageEl) {
+            messageEl.style.display = 'none';
+        }
+    }
 
 
 
@@ -438,6 +617,11 @@ export default class ClassroomScene extends Phaser.Scene {
     }
 
     destroy() {
+        if (this.latexElement) {
+            this.latexElement.remove();
+        }
+
+
         super.destroy();
     }
 }
