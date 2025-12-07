@@ -10,6 +10,7 @@ import TestScene from './scenes/testScene';
 import LoginScene from './scenes/loginScene';
 import ScoreboardScene from './scenes/scoreboardScene';
 import WorkspaceScene from './scenes/workspaceScene';
+import PhysicsPulleyScene from './scenes/physicsPulleyScene';
 
 const config = {
   type: Phaser.AUTO,            
@@ -26,7 +27,10 @@ const config = {
     UIScene,
     TestScene,
     LoginScene,
-    ScoreboardScene
+    ScoreboardScene,
+
+    // nove scene
+    PhysicsPulleyScene
   ],
   physics: {
     default: 'arcade',           
