@@ -15,6 +15,10 @@ export default class ClassroomScene extends Phaser.Scene {
     private stickyNotes: Phaser.GameObjects.Rectangle[] = [];
     private stickyNoteMessages: HTMLDivElement[] = [];
 
+    private timeRemaining: number = 60;
+    private timerText?: Phaser.GameObjects.Text;
+    private timerEvent?: Phaser.Time.TimerEvent;
+
     constructor() {
         super({key: 'ClassroomScene'});
     }
@@ -36,7 +40,8 @@ export default class ClassroomScene extends Phaser.Scene {
         this.createBackground(width, height);
         this.createMonitor(width, height);
         this.createDoor(width, height);
-
+        this.createTimer(width, height);
+        this.startTimer();
 
         this.scale.on('resize', this.handleResize, this);
     }
@@ -666,7 +671,74 @@ export default class ClassroomScene extends Phaser.Scene {
         if (hintModal) hintModal.style.display = 'none';
     }
 
+    private createTimer(width: number, height: number) {
+        const timerX = width * 0.8;
+        const timerY = height * 0.25;
+        const timerWidth = width * 0.18;
+        const timerHeight = height * 0.1;
 
+        const screen = this.add.rectangle(
+            timerX,
+            timerY,
+            timerWidth * 0.95,
+            timerHeight * 0.9,
+            0x1a1f24
+        );
+
+        this.timerText = this.add.text(
+            timerX,
+            timerY - timerHeight * 0.025,
+            `${this.formatTime(this.timeRemaining)}`,
+            {
+                fontFamily: 'Seven Segment',
+                fontSize: `${width * 0.05}px`,
+                fontStyle: 'bold',
+                color: '#ff0000',
+                stroke: '#ffffff',
+                strokeThickness: 3,
+                align: 'center'
+            }
+        ).setOrigin(0.5);
+
+
+    }
+
+    private startTimer() {
+        this.timerEvent = this.time.addEvent({
+            delay: 1000,
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true
+        });
+    }
+
+    private updateTimer() {
+        console.log(this.timeRemaining);
+        if (this.timeRemaining > 0) {
+            this.timeRemaining--;
+            if (this.timerText) {
+                this.timerText.setText(`${this.formatTime(this.timeRemaining)}`);
+            }
+        } else {
+            if (this.timerText) {
+                this.timerText.setText('Time Up');
+                this.hideModal();
+                this.latexElement?.remove();
+                this.time.delayedCall(1500, () => {
+                    this.scene.start('MenuScene');
+                });
+            }
+            if (this.timerEvent) {
+                this.timerEvent.remove(false);
+            }
+        }
+    }
+
+    private formatTime(seconds: number): string {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
 
 
 
