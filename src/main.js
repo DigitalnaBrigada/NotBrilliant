@@ -11,13 +11,19 @@ import LoginScene from './scenes/loginScene';
 import ScoreboardScene from './scenes/scoreboardScene';
 import WorkspaceScene from './scenes/workspaceScene';
 import PhysicsPulleyScene from './scenes/physicsPulleyScene';
+import AstronomyScene from "./scenes/astronomyScene.js";
+import RadioactiveDecayScene from "./scenes/radioactiveDecayScene.js";
+import PhysicsSelectionScene from "./scenes/physicsSelectionScene.js";
 
 const config = {
   type: Phaser.AUTO,            
   width: window.innerWidth,                    
   height: window.innerHeight,                   
   backgroundColor: '#f4f6fa',    
-  parent: 'game-container',      
+  parent: 'game-container',
+  dom: {
+    createContainer: true
+  },
   scene: [
     // uvoz scen
     MenuScene,
@@ -30,7 +36,10 @@ const config = {
     ScoreboardScene,
 
     // nove scene
-    PhysicsPulleyScene
+    PhysicsSelectionScene,
+    PhysicsPulleyScene,
+    AstronomyScene,
+    RadioactiveDecayScene
   ],
   physics: {
     default: 'arcade',           
