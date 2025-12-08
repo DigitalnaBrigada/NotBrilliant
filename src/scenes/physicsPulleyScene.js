@@ -412,7 +412,13 @@ export default class PhysicsPulleyScene extends Phaser.Scene {
 
         this.hintBtn.addListener('click');
         this.hintBtn.on('click', () => {
+            const originalText = this.panelText.text; // save current panel text
             this.panelText.setText(`Pravilni rezultat je: ${requiredForce} N`);
+
+            // revert back after 1 second (1000 ms)
+            this.time.delayedCall(1000, () => {
+                this.panelText.setText(originalText);
+            });
         });
 
         this.submitBtn.addListener('click');
