@@ -54,7 +54,7 @@ export default class LabScene extends Phaser.Scene {
       telescope.on('pointerdown', () => {
           this.cameras.main.fade(300, 0, 0, 0);
           this.time.delayedCall(300, () => {
-              this.scene.start('PhysicsPulleyScene');   // ➜ switch to new scene
+              this.scene.start('PhysicsSelectionScene');
           });
       });
 
