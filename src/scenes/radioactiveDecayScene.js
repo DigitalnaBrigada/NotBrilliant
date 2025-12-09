@@ -22,9 +22,19 @@ export default class RadioactiveDecayScene extends Phaser.Scene {
         this.halfLife = Phaser.Math.Between(3, 12); // seconds
         this.timePassed = 0;
 
-        this.generateAssignment();
-
         this.setupDecayGraph(width / 2, height / 2);
+
+        // TEST BUTTON
+        this.testBtn = this.add.text(width / 2, height / 2 + 250, 'Test', {
+            fontSize: '22px',
+            backgroundColor: '#4a90e2',
+            color: '#fff',
+            padding: 8
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => this.enterTestMode());
+
     }
 
     createBackButton() {
@@ -61,7 +71,6 @@ export default class RadioactiveDecayScene extends Phaser.Scene {
         this.halfLifeInput.on('input', () => {
             this.halfLife = Number(this.halfLifeInput.node.querySelector('input').value);
             // Update assignment if the user changes half-life
-            this.generateAssignment();
         });
 
         // Time loop for graph
@@ -115,17 +124,116 @@ export default class RadioactiveDecayScene extends Phaser.Scene {
             `Preostalo število atomov: ${Math.round(N)}\n` +
             `T = ${this.timePassed.toFixed(1)} s`
         );
-
-        // Show assignment
-        this.assignmentText.setText(
-            `Izračunajte preostalo število atomov po T sekundah.\n` +
-            `Začetno število N0 = ${this.N0}\n` +
-            `Polovični čas T1/2 = ${this.halfLife} s\n` +
-            `Uporabite formulo: N = N0 * (1/2)^(t / T1/2)`
-        );
     }
 
-    generateAssignment() {
-        this.assignmentTime = Phaser.Math.Between(5, 20); // seconds
+    enterTestMode() {
+        this.uiLocked = true;
+
+        // Hide interactive UI
+        this.testBtn.setVisible(false);
+        this.assignmentText.setVisible(false);
+        this.halfLifeInput.setVisible(false);
+
+        const { width, height } = this.cameras.main;
+
+        // Random test values
+        const N0 = Phaser.Math.Between(1000, 5000);
+        const halfLife = Phaser.Math.Between(2, 12);
+        const timeT = Phaser.Math.Between(5, 20);
+
+        const correctValue = Number((N0 * Math.pow(0.5, timeT / halfLife)).toFixed(1));
+
+        this.testScenario = { N0, halfLife, timeT, correctValue };
+
+        // Panel
+        this.panel = this.add.rectangle(width / 2, height / 2, 500, 330, 0xffffff)
+            .setStrokeStyle(4, 0x000000);
+
+        const txt =
+            `Dani podatki:\n\n` +
+            `• Začetno število atomov N₀ = ${N0}\n` +
+            `• Polovični čas T₁/₂ = ${halfLife} s\n` +
+            `• Čas opazovanja t = ${timeT} s\n\n` +
+            `Izračunaj preostalo število atomov.`;
+
+        this.panelText = this.add.text(width / 2, height / 2 - 80, txt, {
+            fontSize: '20px',
+            align: 'center',
+            color: '#000',
+            wordWrap: { width: 440 }
+        }).setOrigin(0.5);
+
+        // Input
+        this.testInput = this.add.dom(width / 2, height / 2 + 20).createFromHTML(`
+        <input type="number" style="font-size:18px; padding:8px; width:220px;" placeholder="Vnesi rezultat">
+    `);
+
+        // Submit
+        this.submitBtn = this.add.dom(width / 2, height / 2 + 90).createFromHTML(`
+        <button style="font-size:18px; padding:8px 18px; background:#4a90e2; color:#fff; border:none;">
+            Potrdi
+        </button>
+    `);
+
+        // Hint
+        this.hintBtn = this.add.dom(width / 2, height / 2 + 140).createFromHTML(`
+        <button style="font-size:16px; padding:6px 14px; background:#999; color:#fff; border:none;">
+            Namig
+        </button>
+    `);
+
+        this.submitBtn.addListener('click');
+        this.submitBtn.on('click', () => this.evaluateTest());
+
+        this.hintBtn.addListener('click');
+        this.hintBtn.on('click', () => {
+            const old = this.panelText.text;
+            this.panelText.setText(`Pravilni rezultat je: ${correctValue}`);
+            this.time.delayedCall(1000, () => this.panelText.setText(old));
+        });
+    }
+
+    evaluateTest() {
+        const value = Number(this.testInput.node.querySelector('input').value);
+        if (isNaN(value)) {
+            this.panelText.setText("Vnesi številko!");
+            return;
+        }
+
+        const c = this.testScenario.correctValue;
+        if (Math.abs(value - c) < 0.1) {
+            this.showTestResult(true, c);
+        } else {
+            this.showTestResult(false, c);
+        }
+    }
+
+    showTestResult(ok, correct) {
+        this.panelText.setText(
+            ok
+                ? `Pravilno! Odklenil si končno kodo fizike \"42\".`
+                : `Napačno. Pravilno: ${correct}`
+        );
+
+        this.submitBtn.node.disabled = true;
+
+        this.time.delayedCall(3000, () => {
+            if (ok) this.scene.start('LabScene');
+            else this.exitTestMode();
+        });
+    }
+
+    exitTestMode() {
+        this.panel.destroy();
+        this.panelText.destroy();
+        this.testInput.destroy();
+        this.submitBtn.destroy();
+        this.hintBtn.destroy();
+
+        this.uiLocked = false;
+
+        this.testBtn.setVisible(true);
+        this.assignmentText.setVisible(true);
+        this.halfLifeInput.setVisible(true);
     }
 }

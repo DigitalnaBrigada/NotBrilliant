@@ -147,10 +147,6 @@ export default class PhysicsPulleyScene extends Phaser.Scene {
     drawNiceWheel(x, y, r) {
         const g = this.diagramGraphics;
 
-        // subtle shadow (offset)
-        g.fillStyle(0x000000, 0.06);
-        g.fillCircle(x + 6, y + 6, r + 6);
-
         // outer rim
         g.lineStyle(4, 0x222222);
         g.fillStyle(0xffffff, 1);
