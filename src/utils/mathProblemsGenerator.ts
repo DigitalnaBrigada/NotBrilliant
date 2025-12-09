@@ -126,6 +126,5 @@ export function generateMathProblems(count = 1): MathProblem[] {
         else if (choice === 1) problems.push(generateDerivativeProblem());
         else problems.push(generateSumSquaresProblem());
     }
-    console.log(problems);
     return problems;
 }
