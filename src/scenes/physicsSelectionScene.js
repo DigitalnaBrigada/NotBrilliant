@@ -16,15 +16,15 @@ export default class PhysicsSelectionScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Buttons for scenes
-        this.makeButton(width / 2, 200, 'Škripec (Pulleys)', () => {
+        this.makeButton(width / 2, 200, 'Škripec (Mehanika)', () => {
             this.scene.start('PhysicsPulleyScene');
         });
 
-        this.makeButton(width / 2, 300, 'Astronomija', () => {
+        this.makeButton(width / 2, 300, 'Orbite (Astronomija)', () => {
             this.scene.start('AstronomyScene');
         });
 
-        this.makeButton(width / 2, 400, 'Radioaktivni Razpad', () => {
+        this.makeButton(width / 2, 400, 'Radioaktivni Razpad\n (Moderna fizika)', () => {
             this.scene.start('RadioactiveDecayScene');
         });
 
