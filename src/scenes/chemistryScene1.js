@@ -7,7 +7,6 @@ export default class ChemistryScene1 extends Phaser.Scene {
 
 	preload() {
 		this.load.image('reaktor', 'src/assets/reaktor.png');
-		this.load.image('cev', 'src/assets/cev.png');
 	}
 
 	create() {

@@ -18,7 +18,7 @@ export default class MenuScene extends Phaser.Scene {
         this.load.image('switch-off', 'src/components/switch-off.png');
         this.load.image('switch-on', 'src/components/switch-on.png');
         this.load.image('wire', 'src/components/wire.png');
-        this.load.image('potion', 'src/assets/potion.jpg');
+        this.load.image('potion', 'src/assets/potion.png');
     }
 
     create() {
