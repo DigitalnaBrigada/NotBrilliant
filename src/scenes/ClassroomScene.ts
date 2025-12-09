@@ -713,7 +713,6 @@ export default class ClassroomScene extends Phaser.Scene {
     }
 
     private updateTimer() {
-        console.log(this.timeRemaining);
         if (this.timeRemaining > 0) {
             this.timeRemaining--;
             if (this.timerText) {
