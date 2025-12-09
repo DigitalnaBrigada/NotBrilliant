@@ -14,6 +14,7 @@ import ChemistryScene1 from './scenes/chemistryScene1';
 import ChemistryScene2 from './scenes/chemistryScene2';
 import ChemistryScene3 from './scenes/chemistryScene3';
 import ChemistryScene4 from './scenes/chemistryScene4';
+import ChemistryScene5 from './scenes/chemistryScene5';
 
 const config = {
   type: Phaser.AUTO,            
@@ -30,6 +31,7 @@ const config = {
     ChemistryScene2,
     ChemistryScene3,
     ChemistryScene4,
+    ChemistryScene5,
     PreloadScene,
     UIScene,
     TestScene,

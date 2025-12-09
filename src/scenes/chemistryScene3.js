@@ -19,10 +19,46 @@ export default class ChemistryScene3 extends Phaser.Scene {
     const timerText = this.add.text(30, 30, formatTime(this.remainingSeconds), {
       fontFamily: 'Arial', fontSize: '22px', color: '#111', fontStyle: 'bold'
     }).setOrigin(0, 0);
+    const timeoutDialog = () => {
+      // Disable interactions and show failure dialog
+      if (btnZone) btnZone.disableInteractive();
+      this.input.keyboard.removeAllListeners();
+      const panelW2 = Math.min(680, width - 160);
+      const panelH2 = 180;
+      const panelX2 = width / 2 - panelW2 / 2;
+      const panelY2 = height / 2 - panelH2 / 2;
+      const dlg = this.add.graphics();
+      dlg.fillStyle(0xffffff, 0.96);
+      dlg.fillRoundedRect(panelX2, panelY2, panelW2, panelH2, 18);
+      dlg.lineStyle(2, 0xcccccc, 1);
+      dlg.strokeRoundedRect(panelX2, panelY2, panelW2, panelH2, 18);
+      const msg = 'Naloge ti žal ni uspelo opraviti v pravem času, poskusi ponovno.';
+      const txt = this.add.text(panelX2 + 16, panelY2 + 16, msg, { fontFamily: 'Arial', fontSize: '18px', color: '#222', wordWrap: { width: panelW2 - 32 } });
+      const btnW2 = 220, btnH2 = 40;
+      const btnX2 = panelX2 + panelW2 / 2 - btnW2 / 2;
+      const btnY2 = panelY2 + panelH2 - btnH2 - 16;
+      const btnBg2 = this.add.graphics();
+      btnBg2.fillStyle(0x3b82f6, 1);
+      btnBg2.fillRoundedRect(btnX2, btnY2, btnW2, btnH2, 10);
+      const btnTxt2 = this.add.text(btnX2 + btnW2 / 2, btnY2 + btnH2 / 2, 'Vrni se na začetek', { fontFamily: 'Arial', fontSize: '18px', color: '#ffffff' }).setOrigin(0.5);
+      const btnZone2 = this.add.zone(btnX2, btnY2, btnW2, btnH2).setOrigin(0).setInteractive({ useHandCursor: true });
+      btnZone2.on('pointerover', () => { btnBg2.clear(); btnBg2.fillStyle(0x2563eb, 1); btnBg2.fillRoundedRect(btnX2, btnY2, btnW2, btnH2, 10); });
+      btnZone2.on('pointerout', () => { btnBg2.clear(); btnBg2.fillStyle(0x3b82f6, 1); btnBg2.fillRoundedRect(btnX2, btnY2, btnW2, btnH2, 10); });
+      btnZone2.on('pointerdown', () => {
+        dlg.destroy(); txt.destroy(); btnBg2.destroy(); btnTxt2.destroy(); btnZone2.destroy();
+        if (inputEl) inputEl.remove();
+        this.scene.start('MenuScene');
+      });
+    };
+
     this.time.addEvent({ delay: 1000, loop: true, callback: () => {
       if (this.remainingSeconds > 0) {
         this.remainingSeconds -= 1;
         timerText.setText(formatTime(this.remainingSeconds));
+        if (this.remainingSeconds <= 0) {
+          timerText.setText(formatTime(0));
+          timeoutDialog();
+        }
       }
     }});
 
