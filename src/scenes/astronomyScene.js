@@ -15,6 +15,12 @@ export default class AstronomyScene extends Phaser.Scene {
             color: '#ffffff'
         }).setOrigin(0.5);
 
+        this.assignmentText = this.add.text(width - 350, 140, '', {
+            fontSize: '18px',
+            color: '#ffffff',
+            wordWrap: { width: 300 }
+        });
+
         this.createBackButton();
 
         // 🔥 Create button BEFORE orbit visualizer
@@ -22,24 +28,16 @@ export default class AstronomyScene extends Phaser.Scene {
 
         this.createOrbitVisualizer(width / 2 - 200, height / 2);
 
-        this.generateOrbitAssignment();
-
-        this.hintBtn = this.add.dom(width - 150, height / 2 + 100)
-            .createFromHTML(`<button style="font-size:16px;">Namig</button>`)
-            .addListener('click')
-            .on('click', () => {
-                const { starMass, orbitRadius, yearDays } = this.orbitAssignment;
-                const G = 6.674e-11;
-                const pxToMeters = 1e9;
-                const rMeters = orbitRadius * pxToMeters;
-                const v = Math.sqrt(G * starMass / rMeters); // orbital speed
-                this.assignmentText.setText(`Namig: Obhodna hitrost ≈ ${v.toFixed(2)} m/s`);
-
-                // Optional: revert back to the original assignment after 2s
-                setTimeout(() => {
-                    this.generateOrbitAssignment();
-                }, 2000);
-            });
+        // TEST BUTTON
+        this.testBtn = this.add.text(width - 180, height - 150, 'Test', {
+            fontSize: '22px',
+            backgroundColor: '#4a90e2',
+            color: '#fff',
+            padding: 8
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => this.enterTestMode());
     }
 
     update(time, delta) {
@@ -385,58 +383,11 @@ export default class AstronomyScene extends Phaser.Scene {
         this.velocityLine.strokePath();
     }
 
-    generateOrbitAssignment() {
-        // Randomize key parameters
-        const starMass = Phaser.Math.Between(1.0e30, 2.0e30); // kg
-        const orbitRadius = Phaser.Math.Between(130, 250); // in pixels, will convert to meters
-        const yearDays = Phaser.Math.Between(360, 370); // orbital period in days
-
-        // store in scene for later checking
-        this.orbitAssignment = { starMass, orbitRadius, yearDays };
-
-        // Create the text for the user
-        const text =
-            `Izračunajte obodno hitrost Zemlje okrog Sonca.\n\n` +
-            `Podatki:\n` +
-            `• Masa zvezde: ${(starMass / 1e30).toFixed(2)} × 10^30 kg\n` +
-            `• Razdalja planeta od zvezde: ${orbitRadius} px (pretvorite v m)\n` +
-            `• Orbitalno obdobje: ${yearDays} dni`;
-
-        if (!this.assignmentText) {
-            const { width, height } = this.cameras.main;
-            const panelWidth = 300;
-            const panelHeight = 200;
-
-            this.assignmentPanel = this.add.rectangle(
-                width - panelWidth / 2 - 20,
-                height / 2,
-                panelWidth,
-                panelHeight,
-                0x1a1a2a,
-                0.95
-            );
-            this.assignmentPanel.setStrokeStyle(3, 0xffffff);
-
-            this.assignmentText = this.add.text(
-                width - panelWidth + 20,
-                height / 2 - panelHeight / 2 + 20,
-                text,
-                {
-                    fontSize: '16px',
-                    color: '#ffffff',
-                    wordWrap: { width: panelWidth - 40 }
-                }
-            );
-        } else {
-            this.assignmentText.setText(text);
-        }
-    }
-
     // Orbit unlock: check how close the planet is to the ellipse curve
     // We'll compute the nearest ellipse point at the same param angle and compare distance.
     checkOrbitUnlock() {
-        if (!this.completeBtn) return;
-        if (!this.dynamicEllipse) return;
+        if (!this.completeBtn) return false;
+        if (!this.dynamicEllipse) return false;
 
         const { a, b, cx, cy, rotation } = this.dynamicEllipse;
         const px = this.planet.x;
@@ -502,5 +453,116 @@ export default class AstronomyScene extends Phaser.Scene {
                 this.scene.start('RadioactiveDecayScene');
             }
         });
+    }
+
+    enterTestMode() {
+        this.uiLocked = true;
+
+        this.assignmentText.setVisible(false);
+        this.completeBtn.setVisible(false);
+        this.completeBtnText.setVisible(false);
+        this.testBtn.setVisible(false);
+
+        const { width, height } = this.cameras.main;
+
+        // Random scenario
+        const starMass = Phaser.Math.Between(1.0e30, 2.2e30);
+        const orbitRadius = Phaser.Math.Between(120, 260);
+        const G = 6.674e-11;
+        const pxToMeters = 1e9;
+        const rMeters = orbitRadius * pxToMeters;
+        const correct = Math.sqrt(G * starMass / rMeters);
+
+        this.testScenario = { starMass, orbitRadius, correct };
+
+        this.panel = this.add.rectangle(width / 2, height / 2, 520, 530, 0xffffff)
+            .setStrokeStyle(4, 0x000000);
+
+        const txt =
+            `Podani podatki:\n\n` +
+            `• Masa zvezde = ${(starMass/1e30).toFixed(2)} × 10³⁰ kg\n` +
+            `• Razdalja planeta = ${orbitRadius} px\n` +
+            `• Pretvorba: 1 px = ${pxToMeters.toExponential(1)} m\n` +
+            `• Skupna razdalja r = ${(rMeters).toExponential(2)} m\n` +
+            `• Gravitacijska konstanta G = 6.674 × 10⁻¹¹ N·m²/kg²\n\n` +
+            `Izračunaj krožno obodno hitrost.`;
+
+        this.panelText = this.add.text(width / 2, height / 2 - 120, txt, {
+            fontSize: '20px',
+            align: 'center',
+            color: '#000',
+            wordWrap: { width: 460 }
+        }).setOrigin(0.5);
+
+        this.testInput = this.add.dom(width / 2, height / 2 + 20).createFromHTML(`
+        <input type="number" style="font-size:18px; padding:8px; width:240px;" placeholder="Rezultat v m/s">
+    `);
+
+        this.submitBtn = this.add.dom(width / 2, height / 2 + 90).createFromHTML(`
+        <button style="font-size:18px; padding:8px 18px; background:#4a90e2; color:#fff; border:none;">
+            Potrdi
+        </button>
+    `);
+
+        this.hintBtn = this.add.dom(width / 2, height / 2 + 140).createFromHTML(`
+        <button style="font-size:16px; padding:6px 14px; background:#999; color:#fff; border:none;">
+            Namig
+        </button>
+    `);
+
+        this.submitBtn.addListener('click');
+        this.submitBtn.on('click', () => this.evaluateTest());
+
+        this.hintBtn.addListener('click');
+        this.hintBtn.on('click', () => {
+            const old = this.panelText.text;
+            this.panelText.setText(`Pravilni rezultat je: ${correct.toFixed(2)} m/s`);
+            this.time.delayedCall(1000, () => this.panelText.setText(old));
+        });
+    }
+
+    evaluateTest() {
+        const val = Number(this.testInput.node.querySelector('input').value);
+        if (isNaN(val)) {
+            this.panelText.setText("Vnesi številko!");
+            return;
+        }
+
+        const c = this.testScenario.correct;
+        if (Math.abs(val - c) < 0.01) {
+            this.showResult(true, c);
+        } else {
+            this.showResult(false, c);
+        }
+    }
+
+    showResult(ok, correct) {
+        this.panelText.setText(
+            ok
+                ? `Pravilno! v = ${correct.toFixed(2)} m/s`
+                : `Napačno. Pravilno: ${correct.toFixed(2)} m/s`
+        );
+
+        this.submitBtn.node.disabled = true;
+
+        this.time.delayedCall(1400, () => {
+            if (ok) this.scene.start('RadioactiveDecayScene');
+            else this.exitTestMode();
+        });
+    }
+
+    exitTestMode() {
+        this.panel.destroy();
+        this.panelText.destroy();
+        this.testInput.destroy();
+        this.submitBtn.destroy();
+        this.hintBtn.destroy();
+
+        this.uiLocked = false;
+
+        this.assignmentText.setVisible(true);
+        this.completeBtn.setVisible(true);
+        this.completeBtnText.setVisible(true);
+        this.testBtn.setVisible(true);
     }
 }
