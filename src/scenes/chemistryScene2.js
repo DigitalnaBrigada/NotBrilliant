@@ -159,7 +159,7 @@ export default class ChemistryScene2 extends Phaser.Scene {
       // Submit button
       const btnW = 160, btnH = 44;
       const btnX = width / 2 - btnW / 2;
-      const btnY = inputY + 60;
+      const btnY = inputY + 70; // premakni gumb malo nižje
       btnBg = this.add.graphics();
       btnBg.fillStyle(0x3b82f6, 1);
       btnBg.fillRoundedRect(btnX, btnY, btnW, btnH, 10);

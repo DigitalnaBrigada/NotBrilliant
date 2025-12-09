@@ -103,12 +103,20 @@ export default class ChemistryScene1 extends Phaser.Scene {
 			zone.on('pointerout', () => { bg.clear(); bg.fillStyle(base, 1); bg.fillRoundedRect(x, y, btnW, btnH, 10); });
 			zone.on('pointerdown', onClick);
 			bg.setVisible(false); txt.setVisible(false); zone.setInteractive(false).setVisible(false);
-			return { bg, txt, zone, show: () => { bg.setVisible(true); txt.setVisible(true); zone.setInteractive(true).setVisible(true); } };
+			return {
+				bg, txt, zone,
+				x, y,
+				centerX: x + btnW / 2,
+				bottomY: y + btnH,
+				show: () => { bg.setVisible(true); txt.setVisible(true); zone.setInteractive(true).setVisible(true); }
+			};
 		};
 		let eksBtn = drawButton(btnXLeft, btnY, 'Eksotermna', () => handleAnswer(true));
 		let endoBtn = drawButton(btnXRight, btnY, 'Endotermna', () => handleAnswer(false));
 
-		const feedbackText = this.add.text(width / 2, btnY + btnH + 40, '', {
+		// Centered feedback at a fixed vertical position
+		const feedbackY = btnY + btnH + 40;
+		const feedbackText = this.add.text(width / 2, feedbackY, '', {
 			fontFamily: 'Arial', fontSize: '18px', color: '#222', align: 'center'
 		}).setOrigin(0.5);
 		feedbackText.setVisible(false);
@@ -193,6 +201,8 @@ export default class ChemistryScene1 extends Phaser.Scene {
 		const explainWrong = 'Namig: ΔH < 0 pomeni eksotermno reakcijo – nižja T → eksotermna smer.';
 
 		let currentQuestion = 1;
+		// For Question 2, we compute a dedicated feedback Y under its buttons
+		let q2FeedbackY = null;
 
 		const handleAnswer = (correct) => {
 			feedbackText.setVisible(true);
@@ -200,11 +210,16 @@ export default class ChemistryScene1 extends Phaser.Scene {
 				feedbackText.setColor('#1b5e20');
 				if (currentQuestion === 1) {
 					feedbackText.setText(explainCorrect);
+					// keep explanation centered horizontally at fixed Y
+					feedbackText.setPosition(width / 2, feedbackY);
 					this.incrementScore(10);
 					// move to question 2 after a short delay
 					this.time.delayedCall(400, () => showQuestion2());
 				} else {
 					feedbackText.setText('✔ Pravilno! Znižanje temperature zmanjšuje NO₂ in stabilizira sistem.');
+					// For Question 2, place explanation under its buttons
+					const y2 = q2FeedbackY ?? feedbackY;
+					feedbackText.setPosition(width / 2, y2);
 					this.incrementScore(10);
 					// stop smoke, then redirect to Scene 2 after 1s
 					smokeEmitter.emitting = false;
@@ -218,8 +233,13 @@ export default class ChemistryScene1 extends Phaser.Scene {
 				feedbackText.setColor('#8b0000');
 				if (currentQuestion === 1) {
 					feedbackText.setText(explainWrong);
+					// keep explanation centered horizontally at fixed Y
+					feedbackText.setPosition(width / 2, feedbackY);
 				} else {
 					feedbackText.setText('Ni pravilno. Razmisli: Eksotermna reakcija – nižja T je prava smer.');
+					// For Question 2, place explanation under its buttons
+					const y2 = q2FeedbackY ?? feedbackY;
+					feedbackText.setPosition(width / 2, y2);
 				}
 				subtractTime(30); // -30s penalty
 			}
@@ -241,6 +261,8 @@ export default class ChemistryScene1 extends Phaser.Scene {
 			eksBtn = drawButton(width / 2 - btnW - btnGap / 2, underY, '❄️ Znižaj temperaturo', () => handleAnswer(true));
 			endoBtn = drawButton(width / 2 + btnGap / 2, underY, '🔥 Povečaj temperaturo', () => handleAnswer(false));
 			eksBtn.show(); endoBtn.show();
+			// Set feedback position for Question 2 to be under its buttons
+			q2FeedbackY = underY + btnH + 40;
 		};
 
 		// Back button

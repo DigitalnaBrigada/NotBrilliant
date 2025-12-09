@@ -231,7 +231,7 @@ export default class ChemistryScene4 extends Phaser.Scene {
       const btnW = 160, btnH = 44;
       const btnX = width / 2 - btnW / 2;
       // Keep submit button below the input
-      const btnY = inputY + 60;
+      const btnY = inputY + 70; 
       btnBg = this.add.graphics();
       btnBg.fillStyle(0x3b82f6, 1);
       btnBg.fillRoundedRect(btnX, btnY, btnW, btnH, 10);
