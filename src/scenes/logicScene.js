@@ -1,16 +1,18 @@
 import Phaser from 'phaser';
-import LabScene from './labScene';
+import DesktopScene from './desktopScene';
 import { Battery } from '../components/battery';
-import { Bulb } from '../components/bulb';
+//import { Bulb } from '../components/bulb';
 import { Wire } from '../components/wire';
 import { CircuitGraph } from '../logic/circuit_graph';
 import { Node } from '../logic/node';
 import { Switch } from '../components/switch';
 import { Resistor } from '../components/resistor';
+import { LogicalNode } from '../components/LogicalNode';
+import { LogicalBulb } from '../components/LogicalBulb';
 
-export default class WorkspaceScene extends Phaser.Scene {
+export default class LogicScene extends Phaser.Scene {
   constructor() {
-    super('WorkspaceScene');
+    super('LogicScene');
   }
 
   init() {
@@ -26,17 +28,26 @@ export default class WorkspaceScene extends Phaser.Scene {
     this.load.image('stikalo-on', 'src/components/switch-on.png');
     this.load.image('stikalo-off', 'src/components/switch-off.png');
     this.load.image('žica', 'src/components/wire.png');
-    this.load.image('ampermeter', 'src/components/ammeter.png');
+    this.load.image('node_off', 'src/components/node_off.png');
+    this.load.image('node_on', 'src/components/node_on.png');
+    this.load.image('bulb_off', 'src/components/bulb_off.png');
+    this.load.image('bulb_on', 'src/components/bulb_on.png');
+    this.load.image('OR_gate', 'src/components/OR_gate.png');
+    this.load.image('AND_gate', 'src/components/AND_gate.png');
     this.load.image('voltmeter', 'src/components/voltmeter.png');
   }
 
   create() {
     const { width, height } = this.cameras.main;
 
+    this.placedComponents = [];
+    this.logicalConnectors = [];
+    this.logicalConnections = [];
+
     // površje mize
-    const desk = this.add.rectangle(0, 0, width, height, 0xe0c9a6).setOrigin(0);
-    const gridGraphics = this.add.graphics();
-    gridGraphics.lineStyle(1, 0x8b7355, 0.35);
+    const desk = this.add.rectangle(0, 0, width, height, 0x13131a).setOrigin(0).setDepth(-100);
+    const gridGraphics = this.add.graphics().setDepth(-50);
+    gridGraphics.lineStyle(1, 0x00FF41, 0.35);
     const gridSize = 40;
     for (let x = 0; x < width; x += gridSize) {
       gridGraphics.beginPath();
@@ -183,28 +194,78 @@ export default class WorkspaceScene extends Phaser.Scene {
       this.sim = false;
     });
 
-    // stranska vrstica na levi
-    const panelWidth = 150;
-    this.add.rectangle(0, 0, panelWidth, height, 0xc0c0c0).setOrigin(0);
-    this.add.rectangle(0, 0, panelWidth, height, 0x000000, 0.2).setOrigin(0);
+    this.connectorGraphics = this.add.graphics().setDepth(0);
+    this.gridSize = 40;
 
-    this.add.text(panelWidth / 2, 60, 'Komponente', {
-      fontSize: '18px',
-      color: '#ffffff',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
+    // Generacija naloge
+    // lvl 1
+    /*const lvl1_node1 = this.createComponent(800, 280, 'Node', 0x00cc66);
+    lvl1_node1.setData('isStatic', true);
+    this.placedComponents.push(lvl1_node1);
+    this.updateLogicNodePositions(lvl1_node1);
 
-    // komponente v stranski vrstici
-    this.createComponent(panelWidth / 2, 100, 'baterija', 0xffcc00);
-    this.createComponent(panelWidth / 2, 180, 'upor', 0xff6600);
-    this.createComponent(panelWidth / 2, 260, 'svetilka', 0xff0000);
-    this.createComponent(panelWidth / 2, 340, 'stikalo-on', 0x666666);
-    this.createComponent(panelWidth / 2, 420, 'stikalo-off', 0x666666);
-    this.createComponent(panelWidth / 2, 500, 'žica', 0x0066cc);
-    this.createComponent(panelWidth / 2, 580, 'ampermeter', 0x00cc66);
-    this.createComponent(panelWidth / 2, 660, 'voltmeter', 0x00cc66);
+    const lvl1_node2 = this.createComponent(800, 600, 'Node', 0x00cc66);
+    lvl1_node2.setData('isStatic', true);
+    this.placedComponents.push(lvl1_node2);
+    this.updateLogicNodePositions(lvl1_node2);
 
-    const backButton = this.add.text(12, 10, '↩ Nazaj', {
+    const lvl1_bulb = this.createComponent(1200, 440, 'Bulb', 0x00cc66);
+    lvl1_bulb.setData('isStatic', true);
+    this.placedComponents.push(lvl1_bulb);
+    this.updateLogicNodePositions(lvl1_bulb);*/
+
+    // lvl 2
+    const lvl2_node1 = this.createComponent(500, 280, 'Node', 0x00cc66);
+    lvl2_node1.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node1);
+    this.updateLogicNodePositions(lvl2_node1);
+
+    const lvl2_node2 = this.createComponent(500, 450, 'Node', 0x00cc66);
+    lvl2_node2.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node2);
+    this.updateLogicNodePositions(lvl2_node2);
+
+    const lvl2_node3 = this.createComponent(500, 700, 'Node', 0x00cc66);
+    lvl2_node3.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node3);
+    this.updateLogicNodePositions(lvl2_node3);
+
+    const lvl2_node4 = this.createComponent(500, 900, 'Node', 0x00cc66);
+    lvl2_node4.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node4);
+    this.updateLogicNodePositions(lvl2_node4);
+
+    const lvl2_OR_gate1 = this.createComponent(750, 400, 'OR_gate', 0x00cc66);
+    lvl2_OR_gate1.setData('isStatic', true);
+    this.placedComponents.push(lvl2_OR_gate1);
+    this.updateLogicNodePositions(lvl2_OR_gate1);
+
+    const lvl2_AND_gate = this.createComponent(750, 800, 'AND_gate', 0x00cc66);
+    lvl2_AND_gate.setData('isStatic', true);
+    this.placedComponents.push(lvl2_AND_gate);
+    this.updateLogicNodePositions(lvl2_AND_gate);
+
+    const lvl2_AND_gate2 = this.createComponent(1000, 600, 'AND_gate', 0x00cc66);
+    lvl2_AND_gate2.setData('isStatic', true);
+    this.placedComponents.push(lvl2_AND_gate2);
+    this.updateLogicNodePositions(lvl2_AND_gate2);
+
+    const lvl2_bulb = this.createComponent(1200, 600, 'Bulb', 0x00cc66);
+    lvl2_bulb.setData('isStatic', true);
+    this.placedComponents.push(lvl2_bulb);
+    this.updateLogicNodePositions(lvl2_bulb);
+
+    // Connections table
+    this.logicalConnections.push([0, 4]) // node1 - OR
+    this.logicalConnections.push([1, 4]) // node2 - OR
+    this.logicalConnections.push([2, 5]) // node3 - AND 1
+    this.logicalConnections.push([3, 5]) // node4 - AND 1
+    this.logicalConnections.push([4, 6]) // OR - AND 2
+    this.logicalConnections.push([5, 6]) // AND 1 - AND 2
+    this.logicalConnections.push([6, 7]) // AND 2 - Bulb
+    this.updateLogicalConnectors();
+    
+    const backButton = this.add.text(12, 10, '↩ Back', {
       fontFamily: 'Arial',
       fontSize: '20px',
       color: '#387affff',
@@ -217,7 +278,7 @@ export default class WorkspaceScene extends Phaser.Scene {
       .on('pointerdown', () => {
         this.cameras.main.fade(300, 0, 0, 0);
         this.time.delayedCall(300, () => {
-          this.scene.start('LabScene');
+          this.scene.start('DesktopScene');
         });
       });
 
@@ -229,43 +290,6 @@ export default class WorkspaceScene extends Phaser.Scene {
       backgroundColor: '#ffffff88',
       padding: { x: 15, y: 8 }
     }).setOrigin(0.5);
-
-    // shrani komponente na mizi
-    this.placedComponents = [];
-    this.gridSize = 40;
-
-    // const scoreButton = this.add.text(this.scale.width / 1.1, 25, 'Lestvica', {
-    //   fontFamily: 'Arial',
-    //   fontSize: '18px',
-    //   color: '#0066ff',
-    //   backgroundColor: '#e1e9ff',
-    //   padding: { x: 20, y: 10 }
-    // })
-    //   .setOrigin(0.5)
-    //   .setInteractive({ useHandCursor: true })
-    //   .on('pointerover', () => scoreButton.setStyle({ color: '#0044cc' }))
-    //   .on('pointerout', () => scoreButton.setStyle({ color: '#0066ff' }))
-    //   .on('pointerdown', () => {
-    //     this.scene.start('ScoreboardScene');
-    //   });
-
-    // const simulate = this.add.text(this.scale.width / 1.1, 25, 'Simulacija', {
-    //   fontFamily: 'Arial',
-    //   fontSize: '18px',
-    //   color: '#0066ff',
-    //   backgroundColor: '#e1e9ff',
-    //   padding: { x: 20, y: 10 }
-    // })
-    //   .setOrigin(0.5, -1)
-    //   .setInteractive({ useHandCursor: true })
-    //   .on('pointerover', () => simulate.setStyle({ color: '#0044cc' }))
-    //   .on('pointerout', () => simulate.setStyle({ color: '#0066ff' }))
-    //   .on('pointerdown', () => {
-    //     console.log(this.graph);
-    //     this.graph.simulate();
-    //   });
-
-    console.log(JSON.parse(localStorage.getItem('users')));
   }
 
   getComponentDetails(type) {
@@ -276,8 +300,9 @@ export default class WorkspaceScene extends Phaser.Scene {
         'stikalo-on': 'Dovoljuje pretok toka',
         'stikalo-off': 'Prepreči pretok toka',
         'žica': 'Povezuje komponente\nKlikni za obračanje',
-        'ampermeter': 'Meri električni tok\nEnota: amperi (A)',
-        'voltmeter': 'Meri električno napetost\nEnota: volti (V)'
+        'node': 'Click to turn ON/OFF',
+        'voltmeter': 'Meri električno napetost\nEnota: volti (V)',
+        'bulb': 'Power to turn ON'
     };
     return details[type] || 'Komponenta';
   }
@@ -311,10 +336,9 @@ export default class WorkspaceScene extends Phaser.Scene {
     const gridSize = this.gridSize;
     const startX = 200;
 
-    // komponeta se postavi na presečišče
+    // komponeta na sredisce mreze/kvadratkov
     const snappedX = Math.round((x - startX) / gridSize) * gridSize + startX;
     const snappedY = Math.round(y / gridSize) * gridSize;
-
     return { x: snappedX, y: snappedY };
   }
 
@@ -324,7 +348,88 @@ export default class WorkspaceScene extends Phaser.Scene {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
 
+updateLogicalConnectors() {
+  //console.log('logicalConnections:', this.logicalConnections);
+  //console.log('placedComponents count:', this.placedComponents.length);
+  
+  this.connectorGraphics.clear();
+  for (const [idx1, idx2] of this.logicalConnections) {
+
+    //console.log(`Processing connection [${idx1}, ${idx2}]`);
+    
+    if (idx1 === undefined || idx2 === undefined) {
+      console.log('Skipping undefined connection');
+      continue;
+    }
+    
+    const comp1 = this.placedComponents[idx1];
+    const comp2 = this.placedComponents[idx2];
+    
+    //console.log(`comp1:`, comp1?.getData('type'), `comp2:`, comp2?.getData('type'));
+    
+    if (!comp1 || !comp2) {
+      console.log('Missing component, skipping');
+      continue;
+    }
+    
+    // Prva komponenta
+    //console.log(comp1.x);
+    const nodePos = this.snapToGrid(parseInt(comp1.x), comp1.y);
+    const nodeOn = comp1.getData('nodeState') === 'on';
+    const color = nodeOn ? 0x00FF33 : 0xFF6666;
+    const width = nodeOn ? 4 : 2;
+    
+    //console.log(`nodePos:`, nodePos, `nodeOn:`, nodeOn);
+    //console.log(comp1.x);
+    
+    // Druga komponenta
+    const logic = comp2.getData('logicComponent');
+    if (!logic) {
+      console.log('No logic component, skipping');
+      continue;
+    }
+
+    console.log(comp2.getData('type'));
+    if(comp2.getData('type') === 'Bulb' || comp2.getData('type') === 'OR_gate' || comp2.getData('type') === 'AND_gate'){
+      this.updateNode(idx1, comp2, nodeOn);
+    }
+    
+    //console.log("LOGIC: ", logic);
+    const ports = [];
+    if (logic.localStart) ports.push(logic.localStart);
+    if (logic.localEnd) ports.push(logic.localEnd);
+    
+    //console.log(`ports:`, ports);
+    
+    // Risanje povezave
+    if (ports.length > 0) {
+      const port = ports[0];
+      const dx = port.x - nodePos.x;
+      const dy = port.y - nodePos.y;
+      
+      //console.log(`Drawing from [${nodePos.x}, ${nodePos.y}] to [${port.x}, ${port.y}]`);
+      
+      if (dx === 0 && dy === 0) {
+        // Ce premalo je pika
+        const radius = nodeOn ? 6 : 4;
+        this.connectorGraphics.fillStyle(color, 1);
+        this.connectorGraphics.fillCircle(nodePos.x, nodePos.y, radius);
+        //console.log(`Drew dot at [${nodePos.x}, ${nodePos.y}] with radius ${radius}`);
+      } else {
+        // Normalno linija
+        this.connectorGraphics.lineStyle(width, color, 1);
+        this.connectorGraphics.beginPath();
+        this.connectorGraphics.moveTo(nodePos.x, nodePos.y);
+        this.connectorGraphics.lineTo(port.x, port.y);
+        this.connectorGraphics.strokePath();
+        //console.log(`Drew line from [${nodePos.x}, ${nodePos.y}] to [${port.x}, ${port.y}]`);
+      }
+    }
+  }
+}
+
   updateLogicNodePositions(component) {
+    //console.log("componenta", component);
     const comp = component.getData('logicComponent');
     if (!comp) return;
 
@@ -375,11 +480,16 @@ export default class WorkspaceScene extends Phaser.Scene {
   }
 
   createComponent(x, y, type, color) {
+    //console.log("Dobis x in y", x, y);
+    let new_x = x;
+    let new_y = y;
     const component = this.add.container(x, y);
 
     let comp = null;
     let componentImage;
     let id;
+    let nodeIterator = 0;
+    let bulbIterator = 0;
 
     switch (type) {
       case 'baterija':
@@ -487,13 +597,77 @@ export default class WorkspaceScene extends Phaser.Scene {
         component.add(componentImage);
         component.setData('logicComponent', comp);
         break;
-      case 'ampermeter':
-        id = "ammeter_" + this.getRandomInt(1000, 9999);
-        componentImage = this.add.image(0, 0, 'ampermeter')
+      case 'Node':
+        id = "node_" + nodeIterator++;
+        comp = new LogicalNode(
+          id,
+          new Node(id + '_start', x, y),
+          new Node(id + '_end', x, y)
+        );
+        comp.type = 'Node';
+        comp.localStart = { x: x, y: y };
+        comp.localEnd = { x: x, y: y };
+        componentImage = this.add.image(0, 0, 'node_off')
           .setOrigin(0.5)
-          .setDisplaySize(100, 100);
+          .setDisplaySize(200, 200);
         component.add(componentImage);
-        component.setData('logicComponent', null)
+        component.setData('logicComponent', comp);
+        component.setData('nodeState', 'off');
+        break;
+      case 'Bulb':
+        id = "bulb_" + bulbIterator++;
+        comp = new LogicalBulb(
+          id,
+          new Node(id + '_start', x, y),
+          new Node(id + '_end', x, y)
+        );
+        comp.type = 'bulb';
+        comp.localStart = { x: x, y: y };
+        comp.localEnd = { x: x, y: y };
+        componentImage = this.add.image(0, 0, 'bulb_off')
+          .setOrigin(0.5)
+          .setDisplaySize(200, 200);
+        component.add(componentImage);
+        component.setData('logicComponent', comp);
+        component.setData('nodeState', 'off');
+        component.setData('PoweredBy', null);
+        break;
+      case 'OR_gate':
+        id = "OR_gate" + bulbIterator++;
+        comp = new LogicalBulb(
+          id,
+          new Node(id + '_start', x, y),
+          new Node(id + '_end', x, y)
+        );
+        comp.type = 'OR_gate';
+        comp.localStart = { x: x, y: y };
+        comp.localEnd = { x: x, y: y };
+        componentImage = this.add.image(0, 0, 'OR_gate')
+          .setOrigin(0.5)
+          .setDisplaySize(200, 200);
+        component.add(componentImage);
+        component.setData('logicComponent', comp);
+        component.setData('nodeState', 'off');
+        component.setData('PoweredBy', null);
+        break;
+      case 'AND_gate':
+        id = "AND_gate" + bulbIterator++;
+        comp = new LogicalBulb(
+          id,
+          new Node(id + '_start', x, y),
+          new Node(id + '_end', x, y)
+        );
+        comp.type = 'AND_gate';
+        comp.localStart = { x: x, y: y };
+        comp.localEnd = { x: x, y: y };
+        componentImage = this.add.image(0, 0, 'AND_gate')
+          .setOrigin(0.5)
+          .setDisplaySize(200, 200);
+        component.add(componentImage);
+        component.setData('logicComponent', comp);
+        component.setData('nodeState', 'off');
+        component.setData('Powered1st', null);
+        component.setData('Powered2nd', null);
         break;
       case 'voltmeter':
         id = "voltmeter_" + this.getRandomInt(1000, 9999);
@@ -506,32 +680,20 @@ export default class WorkspaceScene extends Phaser.Scene {
     }
 
     component.on('pointerover', () => {
-    if (component.getData('isInPanel')) {
-        // prikaži info okno
-        const details = this.getComponentDetails(type);
-        this.infoText.setText(details);
-        
-        // zraven komponente
-        this.infoWindow.x = x + 120;
-        this.infoWindow.y = y;
-        this.infoWindow.setVisible(true);
-    }
-    component.setScale(1.1);
+      component.setScale(1.1);
     });
+  
     
     component.on('pointerout', () => {
-        if (component.getData('isInPanel')) {
-            this.infoWindow.setVisible(false);
-        }
         component.setScale(1);
     });
 
     // Label
-    const label = this.add.text(0, 30, type, {
-      fontSize: '11px',
+    const label = this.add.text(0, 50, type, {
+      fontSize: '20px',
       color: '#fff',
       backgroundColor: '#00000088',
-      padding: { x: 4, y: 2 },
+      padding: { x: 4, y: 2},
     }).setOrigin(0.5);
     component.add(label);
 
@@ -543,7 +705,6 @@ export default class WorkspaceScene extends Phaser.Scene {
     component.setData('originalY', y);
     component.setData('type', type);
     component.setData('color', color);
-    component.setData('isInPanel', true);
     component.setData('rotation', 0);
     if (comp) component.setData('logicComponent', comp);
     component.setData('isDragging', false);
@@ -555,82 +716,39 @@ export default class WorkspaceScene extends Phaser.Scene {
     });
 
     component.on('drag', (pointer, dragX, dragY) => {
+      if(component.getData('isStatic')) return;
       component.x = dragX;
       component.y = dragY;
     });
 
-    component.on('dragend', () => {
-      const isInPanel = component.x < 200;
-
-      if (isInPanel && !component.getData('isInPanel')) {
-        // če je ob strani, se odstrani
-        component.destroy();
-      } else if (!isInPanel && component.getData('isInPanel')) {
-        // s strani na mizo
-        const snapped = this.snapToGrid(component.x, component.y);
-        component.x = snapped.x;
-        component.y = snapped.y;
-
-        const comp = component.getData('logicComponent');
-        if (comp) {
-          console.log("Component: " + comp)
-          this.graph.addComponent(comp);
-
-          // Add start/end nodes to graph if they exist
-          if (comp.start) this.graph.addNode(comp.start);
-          if (comp.end) this.graph.addNode(comp.end);
+    component.on('pointerdown', () => {
+      if(component.getData('isStatic')){
+        if (type === 'Node') {
+        const currentState = component.getData('nodeState') || 'off';
+        const newState = currentState === 'off' ? 'on' : 'off';
+        component.setData('nodeState', newState);
+        // Nova slika glede na stanje
+        const newImage = newState === 'off' ? 'node_off' : 'node_on';
+        componentImage.setTexture(newImage)
+          .setOrigin(0.5)
+          .setDisplaySize(200, 200);
+        component.add(componentImage);    
         }
-
-        this.updateLogicNodePositions(component);
-
-        component.setData('isRotated', false);
-        component.setData('isInPanel', false);
-
-        this.createComponent(
-          component.getData('originalX'),
-          component.getData('originalY'),
-          component.getData('type'),
-          component.getData('color')
-        );
-
-        this.placedComponents.push(component);
-
-      } else if (!component.getData('isInPanel')) {
-        // na mizi in se postavi na mrežo
-        const snapped = this.snapToGrid(component.x, component.y);
-        component.x = snapped.x;
-        component.y = snapped.y;
-
-        this.updateLogicNodePositions(component);
-
-      } else {
-        // postavi se nazaj na originalno mesto
-        component.x = component.getData('originalX');
-        component.y = component.getData('originalY');
-
-        this.updateLogicNodePositions(component);
-
+        this.updateLogicalConnectors();
+        return;
       }
 
-      this.time.delayedCall(500, () => {
-        component.setData('isDragging', false);
-      });
-    });
-
-    component.on('pointerdown', () => {
-      if (!component.getData('isInPanel')) {
         const currentRotation = component.getData('rotation');
         const newRotation = (currentRotation + 90) % 360;
         component.setData('rotation', newRotation);
         component.setData('isRotated', !component.getData('isRotated'));
-
+        
         this.tweens.add({
           targets: component,
           angle: newRotation,
           duration: 150,
           ease: 'Cubic.easeOut',
         });
-      }
     });
 
     // hover efekt
@@ -641,12 +759,84 @@ export default class WorkspaceScene extends Phaser.Scene {
     component.on('pointerout', () => {
       component.setScale(1);
     });
+    return component;
+  }
+
+  updateNode(nodeId, component, nodeOn){
+    const logic = component.getData('logicComponent');
+    switch(logic.type){
+    case 'bulb':
+      if(nodeOn){
+        component.setData('PoweredBy', nodeId);
+        component.setData('nodeState', 'on');
+        console.log("Bulb ON", component.getData('PoweredBy'));
+        let componentImage = this.add.image(0, 0, 'bulb_on')
+          .setOrigin(0.5)
+          .setDisplaySize(200, 200);
+        component.add(componentImage);        
+      }
+      else{
+        if(component.getData('PoweredBy') === nodeId){
+          component.setData('PoweredBy', null);
+          component.setData('nodeState', 'off');
+          console.log("Bulb OFF");
+          let componentImage = this.add.image(0, 0, 'bulb_off')
+            .setOrigin(0.5)
+            .setDisplaySize(200, 200);
+          component.add(componentImage);  
+        }
+      }
+      break;
+    case 'OR_gate':
+      if(nodeOn){
+        component.setData('PoweredBy', nodeId);
+        component.setData('nodeState', 'on');
+        console.log("| Gate ON", component.getData('PoweredBy'));
+      }
+      else{
+        if(component.getData('PoweredBy') === nodeId){
+          component.setData('PoweredBy', null);
+          component.setData('nodeState', 'off');
+          console.log("| Gate OFF");
+        }
+      }
+      break;
+    case 'AND_gate':
+      if(nodeOn){
+        if(component.getData('Powered1st') === null && component.getData('Powered2nd') === null){
+          component.setData('Powered1st', nodeId);
+          console.log("& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered1st') === null && component.getData('Powered2nd') !== nodeId){
+          component.setData('Powered1st', nodeId);
+          component.setData('nodeState', 'on');
+          console.log("& Gate ON", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered2nd') === null && component.getData('Powered1st') !== nodeId){
+          component.setData('Powered2nd', nodeId);
+          component.setData('nodeState', 'on');
+          console.log("& Gate ON", component.getData('Powered1st'), component.getData('Powered2nd'));
+        }
+      } else{
+        if(component.getData('Powered1st') === null && component.getData('Powered2nd') === null){
+          component.setData('nodeState', 'off');
+          console.log("& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered1st') !== null && component.getData('Powered2nd') === nodeId){
+          component.setData('Powered2nd', null);
+          component.setData('nodeState', 'off');
+          console.log("& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered2nd') !== null && component.getData('Powered1st') === nodeId){
+          component.setData('Powered1st', null);
+          component.setData('nodeState', 'off');
+          console.log("& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        }
+      }
+      break;
+    }
   }
 
   checkCircuit() {
     const currentChallenge = this.challenges[this.currentChallengeIndex];
     const placedTypes = this.placedComponents.map(comp => comp.getData('type'));
-    console.log("components", placedTypes);
+    //console.log("components", placedTypes);
     this.checkText.setStyle({ color: '#cc0000' });
     // preverjas ce so vse komponente na mizi
     if (!currentChallenge.requiredComponents.every(req => placedTypes.includes(req))) {
@@ -784,7 +974,7 @@ const config = {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: [LabScene, WorkspaceScene],
+  scene: [DesktopScene, LogicScene],
   physics: {
     default: 'arcade',
     arcade: {
