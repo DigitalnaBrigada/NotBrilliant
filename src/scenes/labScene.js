@@ -280,19 +280,27 @@ export default class LabScene extends Phaser.Scene {
     // Začetek igre TODO dodat pogoj kdaj se izklopi
     if(localStorage.getItem('lightOn') !== 'true') {
       const darkBg = this.add.rectangle(0, 0, width, height, 0x000000, 0.95).setOrigin(0).setDepth(1000);
-      const dialog = this.add.container(1000, 500).setDepth(1001);
+      const dialog = this.add.container(750, 350).setDepth(1001);
       const bg = this.add.rectangle(0, 0, 800, 600, 0xFFFFFF, 0.9).setOrigin(0.5);
       bg.setStrokeStyle(2, 0x666666);
-      const dialogText = this.add.text(-370, -250,
-                  "You are a researcher at the American (not very successful) secret base Area 51, which has just been attacked by aliens from the distant planet Rupsodia in the FERI-324 galaxy.\n\nYour task is to overcome various challenges and solve the puzzles of all 4 subject (Math, Computer science, Physics and Chemistry) in order to gain access to the exit from Area 51. Fortunately, you have access to advanced technologies and tools that will help you on your way, but first you need to focus on the task ahead of you!\n\nDuring the attack, the aliens disabled the main and backup electricity, your task is to first connect the electrical circuit to restore the light in your office.\nGood luck!",
-                  {
-                  fontFamily: 'Monospace',
-                  fontSize: '22px',
-                  color: '#0000A6',
-                  wordWrap: { width: 750 }
-                  });
+        const dialogText = this.add.text(-370, -250,
+            "Ste raziskovalec v ameriški (ne preveč uspešni) tajni bazi Območje 51," +
+            " ki so jo pravkar napadli nezemljani z oddaljenega planeta Rupsodia v galaksiji FERI-324." +
+            "\n\nVaša naloga je premagati različne izzive in rešiti uganke vseh 4 predmetov " +
+            "(matematika, računalništvo, fizika in kemija), da bi dobili dostop do izhoda iz Območja 51. " +
+            "Na srečo imate dostop do naprednih tehnologij in orodij, ki vam bodo pomagala na vaši poti," +
+            " vendar se morate najprej osredotočiti na nalogo, ki je pred vami!\n\n" +
+            "Med napadom so nezemljani onemogočili glavno in rezervno elektriko, vaša naloga je najprej priključiti" +
+            " električni tokokrog, da obnovite luč v svoji pisarni.\nSrečno!",
+            {
+                fontFamily: 'Monospace',
+                fontSize: '22px',
+                color: '#0000A6',
+                wordWrap: { width: 750 }
+            }
+        );
 
-              // gumb za zapret
+        // gumb za zapret
               const closeBtn = this.add.text(0, 200, 'Ok let\'s go!', {
                   fontFamily: 'Arial',
                   fontSize: '16px',
