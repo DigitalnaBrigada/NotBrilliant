@@ -18,7 +18,6 @@ export default class MenuScene extends Phaser.Scene {
         this.load.image('switch-off', 'src/components/switch-off.png');
         this.load.image('switch-on', 'src/components/switch-on.png');
         this.load.image('wire', 'src/components/wire.png');
-        this.load.image('potion', 'src/assets/potion.png');
     }
 
     create() {
@@ -31,7 +30,7 @@ export default class MenuScene extends Phaser.Scene {
         // ozdaje
         this.createDeskBackground(width, height);
 
-        // zice 
+        // zice
         this.cameras.main.setBackgroundColor('#ffffff');
         const wireThickness = 9.5;
         const wireColor = 0x1a1a1a;
@@ -70,7 +69,7 @@ export default class MenuScene extends Phaser.Scene {
         if (username) {
             this.scene.start('LabScene');
             return;
-        } 
+        }
 
         // komponente
         this.createComponents(width, height, rectX, rectY);
@@ -191,6 +190,23 @@ export default class MenuScene extends Phaser.Scene {
         const rectX = this.scale.width / 2;
         const rectY = this.scale.height / 2 - 50;
 
+        // vogali gumba
+        const cornerRadius = 15;
+        const buttonWidth = 250;
+        const buttonHeight = 60;
+
+        // ozadje gumba
+        this.startButtonBackground = this.add.graphics();
+        this.startButtonBackground.fillStyle(0xdddddd, 1); // siva
+        this.startButtonBackground.fillRoundedRect(
+            rectX - buttonWidth / 2, // X zacetek
+            (rectY + 100) - buttonHeight / 2, // Y zacetek
+            buttonWidth,
+            buttonHeight,
+            cornerRadius // Polmer!
+        );
+        this.startButtonBackground.setDepth(-1);
+
         // naslov
         this.title = this.add.text(rectX, rectY, 'LABORATORIJ', {
             fontFamily: 'Arial',
@@ -198,6 +214,30 @@ export default class MenuScene extends Phaser.Scene {
             fontStyle: 'bold',
             color: '#222222'
         }).setOrigin(0.5);
+
+        // gumb
+        this.loginButton = this.add.text(rectX, rectY + 100, '▶ Začni igro', {
+            fontFamily: 'Arial',
+            fontSize: '32px',
+            color: '#aaaaaa',
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+
+            // hower
+            .on('pointerover', () => {
+                if (this.isSwitchOn)
+                    this.startButtonBackground.fillStyle(0x0f5cadff, 1).fillRoundedRect(rectX - buttonWidth / 2, (rectY + 100) - buttonHeight / 2, buttonWidth, buttonHeight, cornerRadius);
+            })
+            .on('pointerout', () => {
+                if (this.isSwitchOn)
+                    this.startButtonBackground.fillStyle(0x3399ff, 1).fillRoundedRect(rectX - buttonWidth / 2, (rectY + 100) - buttonHeight / 2, buttonWidth, buttonHeight, cornerRadius);
+            })
+            .on('pointerdown', () => {
+                if (this.isSwitchOn) this.scene.start('LoginScene');
+            });
+
+        console.log(`${localStorage.getItem('username')}`);
 
         this.titleTween = this.tweens.add({
             targets: this.title,
@@ -207,24 +247,9 @@ export default class MenuScene extends Phaser.Scene {
             repeat: -1,
             paused: true
         });
-
-        // Klikabilna slika napoja – postavi na mizo (spodnji del)
-        const potionY = this.scale.height - 140;
-        const potion = this.add.image(rectX, potionY, 'potion')
-            .setOrigin(0.5)
-            .setScale(0.35)
-            .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => {
-                if (this.isSwitchOn) this.scene.start('ChemistryScene1');
-            });
-        // preprosta "senca" pod napojem za občutek postavitve na mizo
-        const shadow = this.add.ellipse(rectX, potionY + 40, 120, 22, 0x000000, 0.12).setDepth(potion.depth - 1);
-        // Hover efekt: rahla povečava
-        potion.on('pointerover', () => { if (this.isSwitchOn) this.tweens.add({ targets: [potion, shadow], scale: 0.38, duration: 200, yoyo: false }); });
-        potion.on('pointerout',  () => { if (this.isSwitchOn) this.tweens.add({ targets: [potion, shadow], scale: 0.35, duration: 200, yoyo: false }); });
     }
 
-enableStartButton(isActive) {
+    enableStartButton(isActive) {
         // zaobljen gumb
         const cornerRadius = 15;
         const buttonWidth = 250;
@@ -232,13 +257,22 @@ enableStartButton(isActive) {
         const rectX = this.scale.width / 2;
         const rectY = this.scale.height / 2 - 50;
 
-        // Preklop vpliva samo na naslov animacijo; odstranili smo gumbe
         if (isActive) {
-            // enable title glow animation
-            this.titleTween.resume();
+            this.loginButton.setStyle({
+                color: '#ffffff', // spremeni samo barvo besedila
+            });
+            // novo ozadje
+            this.startButtonBackground.clear();
+            this.startButtonBackground.fillStyle(0x3399ff, 1);
+            this.startButtonBackground.fillRoundedRect(rectX - buttonWidth / 2, (rectY + 100) - buttonHeight / 2, buttonWidth, buttonHeight, cornerRadius);
         } else {
-            this.titleTween.pause();
-            this.title.setScale(1);
+            this.loginButton.setStyle({
+                color: '#aaaaaa', // spremeni samo barvo besedila
+            });
+            // novo ozadje
+            this.startButtonBackground.clear();
+            this.startButtonBackground.fillStyle(0xdddddd, 1);
+            this.startButtonBackground.fillRoundedRect(rectX - buttonWidth / 2, (rectY + 100) - buttonHeight / 2, buttonWidth, buttonHeight, cornerRadius);
         }
     }
 }
