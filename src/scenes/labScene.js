@@ -243,6 +243,72 @@ export default class LabScene extends Phaser.Scene {
             this.createModal();
         }
     }
+    // Odstranjeni gumbi Naloga 1 in Naloga 5
+
+    // Dodaj napoj na mizo – center mize, tik nad delovno površino
+    const potion = this.add.image(tableX +200, tableY-30, 'potion')
+      .setOrigin(0.5)
+      .setScale(0.35)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => {
+        this.scene.start('ChemistryScene1');
+      });
+    // senca pod napojem za občutek globine
+    const shadow = this.add.ellipse(tableX, tableY + 70, 140, 26, 0x000000, 0.12);
+    shadow.setDepth(potion.depth - 1);
+    // hover efekt
+    potion.on('pointerover', () => { this.tweens.add({ targets: [potion, shadow], scale: 0.38, duration: 180 }); });
+    potion.on('pointerout',  () => { this.tweens.add({ targets: [potion, shadow], scale: 0.35, duration: 180 }); });
+
+    // this.input.keyboard.on('keydown-ESC', () => {
+    //     this.scene.start('MenuScene');
+    // });
+
+    //console.log(`${localStorage.getItem('username')}`);
+    console.log(JSON.parse(localStorage.getItem('users')));
+    this.createAbacus(this.scale.width, this.scale.height)
+
+    // Začetek igre TODO dodat pogoj kdaj se izklopi
+    if(localStorage.getItem('lightOn') !== 'true') {
+      const darkBg = this.add.rectangle(0, 0, width, height, 0x000000, 0.95).setOrigin(0).setDepth(1000);
+      const dialog = this.add.container(750, 350).setDepth(1001);
+      const bg = this.add.rectangle(0, 0, 800, 600, 0xFFFFFF, 0.9).setOrigin(0.5);
+      bg.setStrokeStyle(2, 0x666666);
+        const dialogText = this.add.text(-370, -250,
+            "Ste raziskovalec v ameriški (ne preveč uspešni) tajni bazi Območje 51," +
+            " ki so jo pravkar napadli nezemljani z oddaljenega planeta Rupsodia v galaksiji FERI-324." +
+            "\n\nVaša naloga je premagati različne izzive in rešiti uganke vseh 4 predmetov " +
+            "(matematika, računalništvo, fizika in kemija), da bi dobili dostop do izhoda iz Območja 51. " +
+            "Na srečo imate dostop do naprednih tehnologij in orodij, ki vam bodo pomagala na vaši poti," +
+            " vendar se morate najprej osredotočiti na nalogo, ki je pred vami!\n\n" +
+            "Med napadom so nezemljani onemogočili glavno in rezervno elektriko, vaša naloga je najprej priključiti" +
+            " električni tokokrog, da obnovite luč v svoji pisarni.\nSrečno!",
+            {
+                fontFamily: 'Monospace',
+                fontSize: '22px',
+                color: '#0000A6',
+                wordWrap: { width: 750 }
+            }
+        );
+
+        // gumb za zapret
+              const closeBtn = this.add.text(0, 200, 'Ok let\'s go!', {
+                  fontFamily: 'Arial',
+                  fontSize: '16px',
+                  color: '#ffffff',
+                  backgroundColor: '#333333',
+                  padding: { x: 30, y: 16 }
+              }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+              closeBtn.on('pointerdown', () => {
+                  dialog.destroy();
+                  this.screenDialog = null;
+                  this.scene.start('WorkspaceScene');
+              });
+
+              dialog.add([bg, dialogText, closeBtn]);
+              this.screenDialog = dialog;
+            }
+  }
 
     createAbacus(width, height) {
         const abacusX = width * 0.75;

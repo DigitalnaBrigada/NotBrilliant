@@ -20,7 +20,9 @@ import AstronomyScene from "./scenes/astronomyScene.js";
 import RadioactiveDecayScene from "./scenes/radioactiveDecayScene.js";
 import PhysicsSelectionScene from "./scenes/physicsSelectionScene.js";
 import ClassroomScene from './scenes/ClassroomScene.ts';
-
+import LogicScene from './scenes/logicScene';
+import DesktopScene from './scenes/desktopScene';
+import LinuxScene from './scenes/linuxScene';
 
 const config = {
   type: Phaser.AUTO,            
@@ -53,6 +55,9 @@ const config = {
     AstronomyScene,
     RadioactiveDecayScene,
     ClassroomScene,
+    LogicScene,
+    DesktopScene,
+    LinuxScene
   ],
   physics: {
     default: 'arcade',           
