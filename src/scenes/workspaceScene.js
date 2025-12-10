@@ -671,6 +671,9 @@ export default class WorkspaceScene extends Phaser.Scene {
     this.checkText.setStyle({ color: '#00aa00' });
     this.checkText.setText('Čestitke! Krog je pravilen.');
     localStorage.setItem('lightOn', true);
+    this.cameras.main.fade(300, 0, 0, 0);
+    this.time.delayedCall(300, () => {
+    this.scene.start('LabScene')});
     this.addPoints(10);
 
     if (currentChallenge.theory) {
@@ -679,7 +682,10 @@ export default class WorkspaceScene extends Phaser.Scene {
     else {
       this.checkText.setStyle({ color: '#00aa00' });
       this.checkText.setText('Čestitke! Krog je pravilen.');
-      ocalStorage.setItem('lightOn', true);
+      localStorage.setItem('lightOn', true);
+      this.cameras.main.fade(300, 0, 0, 0);
+      this.time.delayedCall(300, () => {
+      this.scene.start('LabScene')});
       this.addPoints(10);
       this.time.delayedCall(2000, () => this.nextChallenge());
     }
@@ -708,6 +714,9 @@ export default class WorkspaceScene extends Phaser.Scene {
     else {
       this.promptText.setText('Vse naloge so uspešno opravljene! Čestitke!');
       ocalStorage.setItem('lightOn', true);
+      this.cameras.main.fade(300, 0, 0, 0);
+      this.time.delayedCall(300, () => {
+      this.scene.start('LabScene')});
       localStorage.removeItem('currentChallengeIndex');
     }
   }

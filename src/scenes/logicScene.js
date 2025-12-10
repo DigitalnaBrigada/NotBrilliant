@@ -358,7 +358,7 @@ export default class LogicScene extends Phaser.Scene {
         });
       });
 
-    this.add.text(width / 2 + 50, 30, 'Povleci komponente na mizo in zgradi svoj električni krog!', {
+    this.add.text(width / 2 + 50, 30, 'Vklopi prava stikala da vklopiš luč!', {
       fontSize: '20px',
       color: '#333',
       fontStyle: 'bold',

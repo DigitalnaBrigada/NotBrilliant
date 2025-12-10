@@ -281,6 +281,7 @@ export default class LabScene extends Phaser.Scene {
 
 
     // Začetek igre TODO dodat pogoj kdaj se izklopi
+    if(localStorage.getItem('lightOn') !== 'true') {
       const darkBg = this.add.rectangle(0, 0, width, height, 0x000000, 0.95).setOrigin(0).setDepth(1000);
       const dialog = this.add.container(1200, 600).setDepth(1001);
       const bg = this.add.rectangle(0, 0, 800, 600, 0xFFFFFF, 0.9).setOrigin(0.5);
@@ -310,7 +311,11 @@ export default class LabScene extends Phaser.Scene {
 
               dialog.add([bg, dialogText, closeBtn]);
               this.screenDialog = dialog;
+<<<<<<< HEAD
 >>>>>>> 7e7dfac (Computer science bugfixing, adding content and added initial dialog box)
+=======
+            }
+>>>>>>> 26bcf3e (Added check for completed electric part)
   }
 
     createAbacus(width, height) {
