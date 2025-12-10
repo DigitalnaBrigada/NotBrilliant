@@ -98,8 +98,8 @@ export default class ChemistryScene4 extends Phaser.Scene {
 
     // Reactor at top
     const reactorX = width / 2;
-    const reactorY = 220; // move lower for more breathing room
-    const reactor = this.add.image(reactorX, reactorY, 'reaktor').setDisplaySize(300, 300);
+    const reactorY = 160; // move lower for more breathing room
+    const reactor = this.add.image(reactorX, reactorY, 'reaktor').setDisplaySize(250, 250);
     reactor.setVisible(false);
 
     // Screen panel below the reactor
@@ -134,7 +134,7 @@ export default class ChemistryScene4 extends Phaser.Scene {
     g.destroy();
 
     // Fume emitter above reactor, subtle reddish smoke
-    const fumeEmitter = this.add.particles(reactorX, reactorY - 160, 'acidFume', {
+    const fumeEmitter = this.add.particles(reactorX, reactorY - 130, 'acidFume', {
       angle: { min: 260, max: 280 },
       speed: { min: 15, max: 40 },
       scale: { start: 0.7, end: 1.4 },

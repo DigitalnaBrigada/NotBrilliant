@@ -121,10 +121,9 @@ export default class ChemistryScene1 extends Phaser.Scene {
 		feedbackText.setVisible(false);
 
 		// Reactor (appears only at Question 2)
-		// Reactor is 300x300; place centered below screen
 		const reactorX = width / 2;
-		const reactorY = screenY + screenH + 180;
-		const reactor = this.add.image(reactorX, reactorY, 'reaktor').setDisplaySize(300, 300);
+		const reactorY = screenY + screenH + 145;
+		const reactor = this.add.image(reactorX, reactorY, 'reaktor').setDisplaySize(250, 250);
 		reactor.setVisible(false);
 
 		// Smoke emitter (Phaser 3.60+ API: add.particles returns an emitter)
