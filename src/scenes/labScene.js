@@ -17,7 +17,10 @@ export default class LabScene extends Phaser.Scene {
         this.load.image('avatar9', 'src/avatars/avatar9.png');
         this.load.image('avatar10', 'src/avatars/avatar10.png');
         this.load.image('avatar11', 'src/avatars/avatar11.png');
-    }
+
+
+        this.load.image('telescope', 'src/assets/telescope.png');
+  }
 
   create() {
     const { width, height } = this.cameras.main;
@@ -42,8 +45,20 @@ export default class LabScene extends Phaser.Scene {
     
     // delovna površina mize
     const tableSurface = this.add.rectangle(tableX, tableY + 15, tableWidth - 30, tableHeight - 30, 0xa0826d).setOrigin(0.5, 0);
-    
-    // mreža
+
+    //teleskop
+      const telescope = this.add.image(width - 140, height - 250, 'telescope')
+          .setScale(0.35)
+          .setInteractive({ useHandCursor: true });
+
+      telescope.on('pointerdown', () => {
+          this.cameras.main.fade(300, 0, 0, 0);
+          this.time.delayedCall(300, () => {
+              this.scene.start('PhysicsSelectionScene');
+          });
+      });
+
+      // mreža
     const gridGraphics = this.add.graphics();
     gridGraphics.lineStyle(1, 0x8b7355, 0.3);
     const gridSize = 30;
