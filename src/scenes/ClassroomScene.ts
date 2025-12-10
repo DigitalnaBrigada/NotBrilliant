@@ -440,7 +440,7 @@ export default class ClassroomScene extends Phaser.Scene {
       <div class="modal-backdrop" style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);"></div>
       <div class="modal-content" style="position: relative; background: #111827; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); width: 400px; border: 4px solid #374151;">
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.5rem; border-bottom: 1px solid #374151;">
-          <h2 style="font-size: 1.5rem; color: white; margin: 0;">Enter Pincode</h2>
+          <h2 style="font-size: 1.5rem; color: white; margin: 0;">Vnesi Pin</h2>
           <button id="close-modal" style="color: #9ca3af; background: none; border: none; cursor: pointer; font-size: 1.5rem;">×</button>
         </div>
         <div style="padding: 1.5rem;">
@@ -456,11 +456,11 @@ export default class ClassroomScene extends Phaser.Scene {
             ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => `
               <button class="num-btn" data-num="${num}" style="background: #374151; color: white; font-size: 1.5rem; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">${num}</button>
             `).join('')}
-            <button id="clear-btn" style="background: #dc2626; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">Clear</button>
+            <button id="clear-btn" style="background: #dc2626; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">Počisti</button>
             <button class="num-btn" data-num="0" style="background: #374151; color: white; font-size: 1.5rem; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">0</button>
             <button id="backspace-btn" style="background: #ca8a04; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">←</button>
           </div>
-          <button id="submit-btn" style="width: 100%; background: #16a34a; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">Submit</button>
+          <button id="submit-btn" style="width: 100%; background: #16a34a; color: white; padding: 1rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background 0.2s;">Pošlji</button>
         </div>
       </div>
     `;
@@ -566,7 +566,7 @@ export default class ClassroomScene extends Phaser.Scene {
         if (this.pincode.length === 0) return;
 
         if (this.pincode === this.mathProblems[this.currentProblemIndex].correctAnswer) {
-            this.showMessage('Access Granted! 🎉', '#22c55e');
+            this.showMessage('Dostop uspešen! 🎉', '#22c55e');
             this.hideModal();
             this.latexElement.innerHTML = `e = _._`
             this.time.delayedCall(10000, () => {
@@ -574,7 +574,7 @@ export default class ClassroomScene extends Phaser.Scene {
                 this.scene.start('MenuScene');
             });
         } else {
-            this.showMessage('Incorrect Password', '#ef4444');
+            this.showMessage('Napačno geslo!', '#ef4444');
             const currentHints = this.mathProblems[this.currentProblemIndex].hints;
             if (this.hintIndex < currentHints.length) {
                 this.createStickyNote(currentHints[this.hintIndex]);
