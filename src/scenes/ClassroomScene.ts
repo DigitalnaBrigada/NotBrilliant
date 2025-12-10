@@ -15,7 +15,7 @@ export default class ClassroomScene extends Phaser.Scene {
     private stickyNotes: Phaser.GameObjects.Rectangle[] = [];
     private stickyNoteMessages: HTMLDivElement[] = [];
 
-    private timeRemaining: number = 60;
+    private timeRemaining: number = 300;
     private timerText?: Phaser.GameObjects.Text;
     private timerEvent?: Phaser.Time.TimerEvent;
 
@@ -567,9 +567,10 @@ export default class ClassroomScene extends Phaser.Scene {
 
         if (this.pincode === this.mathProblems[this.currentProblemIndex].correctAnswer) {
             this.showMessage('Access Granted! 🎉', '#22c55e');
-            this.latexElement?.remove();
-            this.time.delayedCall(5000, () => {
-                this.hideModal();
+            this.hideModal();
+            this.latexElement.innerHTML = `e = _._`
+            this.time.delayedCall(10000, () => {
+                this.latexElement?.remove();
                 this.scene.start('MenuScene');
             });
         } else {
