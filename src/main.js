@@ -23,6 +23,8 @@ import ClassroomScene from './scenes/ClassroomScene.ts';
 import LogicScene from './scenes/logicScene';
 import DesktopScene from './scenes/desktopScene';
 import LinuxScene from './scenes/linuxScene';
+import EscapeScene from "./scenes/EscapeScene.js";
+
 
 const config = {
   type: Phaser.AUTO,            
@@ -34,6 +36,7 @@ const config = {
     createContainer: true
   },
   scene: [
+      EscapeScene,
     // uvoz scen
     MenuScene,
     LabScene,
@@ -57,7 +60,8 @@ const config = {
     ClassroomScene,
     LogicScene,
     DesktopScene,
-    LinuxScene
+    LinuxScene,
+      // EscapeScene
   ],
   physics: {
     default: 'arcade',           
