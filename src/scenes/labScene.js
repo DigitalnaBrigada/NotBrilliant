@@ -58,6 +58,62 @@ export default class LabScene extends Phaser.Scene {
       });
 
       // mreža
+
+    // monitor
+    const monitorX = tableX - 100;
+    const monitorY = tableY - 100;
+    const monitor = this.add.container(monitorX, monitorY);
+
+    // rob
+    const monitorBody = this.add.rectangle(0, -8, 260, 150, 0x0c0c0c)
+      .setOrigin(0.5)
+      .setStrokeStyle(4, 0x333333);
+
+    // zaslon
+    const screen = this.add.rectangle(0, -6, 230, 120, 0x001f18).setOrigin(0.5);
+
+    // glitchy tekst
+    const screenText = this.add.text(-100, -28, 'Error executing code!\n> _', {
+      fontFamily: 'monospace',
+      fontSize: '16px',
+      color: '#00ff88',
+      lineSpacing: 8
+    }).setOrigin(0, 0);
+    const messages = [
+      'Error executing code!',
+      'Err0r ex3cut1ng cod€!',
+      'Errr0!r eX3cut1ng c0d€',
+      'Err░rr█▓▒Жeut1ng c☢d¢',
+      '☢ ☣ ⚠ ☢ ☣ ⚠ ☢ ☣ ⚠'
+    ];
+    let msgIndex = 0;
+    this.time.addEvent({
+      delay: 5000,
+      loop: true,
+      callback: () => {
+        msgIndex = (msgIndex + 1) % messages.length;
+        const text = messages[msgIndex];
+        screenText._base = text + '\n> _';
+        screenText._current = screenText._base;
+        screenText.setText(screenText._current + (screenText._cursorVisible ? '|' : ' '));
+      }
+    });
+
+    // stojalo
+    const stand = this.add.rectangle(0, 74, 24, 34, 0x222222).setOrigin(0.5);
+    const base = this.add.rectangle(0, 92, 110, 12, 0x1b1b1b).setOrigin(0.5);
+
+    // skupaj
+    monitor.add([monitorBody, screen, screenText, stand, base]);
+    monitor.setDepth(20);
+
+    // interaktivni zaslon
+    screen.setInteractive({ useHandCursor: true });
+    screen.on('pointerdown', () => {
+      this.scene.start('DesktopScene');
+    });
+    
+    // mreža
     const gridGraphics = this.add.graphics();
     gridGraphics.lineStyle(1, 0x8b7355, 0.3);
     const gridSize = 30;
@@ -89,7 +145,7 @@ export default class LabScene extends Phaser.Scene {
     const interactiveZone = this.add.zone(tableX, tableY + tableHeight/2, tableWidth, tableHeight)
       .setInteractive({ useHandCursor: true });
     
-    const instruction = this.add.text(tableX, tableY - 80, 'Klikni na mizo in začni graditi svoj električni krog!', {
+    const instruction = this.add.text(tableX, tableY - 240, 'Press around to start the game!', {
       fontSize: '24px',
       color: '#333',
       fontStyle: 'bold',
@@ -105,13 +161,9 @@ export default class LabScene extends Phaser.Scene {
       yoyo: true,
       repeat: -1
     });
-    
-    // zoom na mizo
+
     interactiveZone.on('pointerdown', () => {
-      this.cameras.main.fade(300, 0, 0, 0);
-      this.time.delayedCall(300, () => {
-        this.scene.start('WorkspaceScene');
-      });
+        // samo miza je, pomiri se
     });
     
     interactiveZone.on('pointerover', () => {
@@ -125,7 +177,7 @@ export default class LabScene extends Phaser.Scene {
     const username = localStorage.getItem('username');
     const pfp = localStorage.getItem('profilePic');
 
-    // avvatar
+    // avatar
     const avatarX = 230;
     const avatarY = 55;
     const avatarRadius = 30;
@@ -223,7 +275,47 @@ export default class LabScene extends Phaser.Scene {
 
     //console.log(`${localStorage.getItem('username')}`);
     console.log(JSON.parse(localStorage.getItem('users')));
+<<<<<<< HEAD
     this.createAbacus(this.scale.width, this.scale.height)
+=======
+
+
+    // Začetek igre TODO dodat pogoj kdaj se izklopi
+    if(localStorage.getItem('lightOn') !== 'true') {
+      const darkBg = this.add.rectangle(0, 0, width, height, 0x000000, 0.95).setOrigin(0).setDepth(1000);
+      const dialog = this.add.container(1200, 600).setDepth(1001);
+      const bg = this.add.rectangle(0, 0, 800, 600, 0xFFFFFF, 0.9).setOrigin(0.5);
+      bg.setStrokeStyle(2, 0x666666);
+      const dialogText = this.add.text(-370, -250,
+                  "You are a researcher at the American (not very successful) secret base Area 51, which has just been attacked by aliens from the distant planet Rupsodia in the FERI-324 galaxy.\n\nYour task is to overcome various challenges and solve the puzzles of all 4 subject (Math, Computer science, Physics and Chemistry) in order to gain access to the exit from Area 51. Fortunately, you have access to advanced technologies and tools that will help you on your way, but first you need to focus on the task ahead of you!\n\nDuring the attack, the aliens disabled the main and backup electricity, your task is to first connect the electrical circuit to restore the light in your office.\nGood luck!",
+                  {
+                  fontFamily: 'Monospace',
+                  fontSize: '22px',
+                  color: '#0000A6',
+                  wordWrap: { width: 750 }
+                  });
+
+              // gumb za zapret
+              const closeBtn = this.add.text(0, 200, 'Ok let\'s go!', {
+                  fontFamily: 'Arial',
+                  fontSize: '16px',
+                  color: '#ffffff',
+                  backgroundColor: '#333333',
+                  padding: { x: 30, y: 16 }
+              }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+              closeBtn.on('pointerdown', () => {
+                  dialog.destroy();
+                  this.screenDialog = null;
+                  this.scene.start('WorkspaceScene');
+              });
+
+              dialog.add([bg, dialogText, closeBtn]);
+              this.screenDialog = dialog;
+<<<<<<< HEAD
+>>>>>>> 7e7dfac (Computer science bugfixing, adding content and added initial dialog box)
+=======
+            }
+>>>>>>> 26bcf3e (Added check for completed electric part)
   }
 
     createAbacus(width, height) {
