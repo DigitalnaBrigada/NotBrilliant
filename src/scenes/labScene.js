@@ -223,5 +223,74 @@ export default class LabScene extends Phaser.Scene {
 
     //console.log(`${localStorage.getItem('username')}`);
     console.log(JSON.parse(localStorage.getItem('users')));
+    this.createAbacus(this.scale.width, this.scale.height)
   }
+
+    createAbacus(width, height) {
+        const abacusX = width * 0.15;
+        const abacusY = height * 0.91;
+        const abacusWidth = width * 0.125;
+        const abacusHeight = height * 0.15;
+        const frameThickness = width * 0.003;
+
+        const rainbowColors = [
+            0xff0000, 0xff7f00, 0xffff00, 0x00ff00,
+            0x0000ff, 0x4b0082, 0x9400d3
+        ];
+
+        const numRows = 7;
+        const beadsPerRow = 10;
+        const beadRadius = width * 0.003;
+        const beadDiameter = beadRadius * 2;
+        const rowSpacing = abacusHeight * 0.85 / (numRows - 0.5);
+
+        const abacusContainer = this.add.container(abacusX, abacusY);
+
+        for (let row = 0; row < numRows; row++) {
+            const rodY = -abacusHeight * 0.4 + row * rowSpacing; // relative to container
+            const rod = this.add.rectangle(0, rodY, abacusWidth, frameThickness, 0x696969);
+            abacusContainer.add(rod);
+        }
+
+        for (let row = 0; row < numRows; row++) {
+            const rodY = -abacusHeight * 0.4 + row * rowSpacing;
+            const availableWidth = abacusWidth * 0.9;
+            const startX = -availableWidth / 2;
+
+            let currentX = startX;
+            for (let i = 0; i < beadsPerRow; i++) {
+                const randomSpacing = beadDiameter * (1.2 + Math.random());
+                currentX += randomSpacing;
+
+                if (currentX + beadRadius > startX + availableWidth) break;
+
+                const bead = this.add.circle(currentX, rodY, beadRadius, rainbowColors[row]);
+                bead.setStrokeStyle(width * 0.0008, 0x333333);
+                abacusContainer.add(bead);
+            }
+        }
+
+        const topBar = this.add.rectangle(0, -abacusHeight / 2, abacusWidth, frameThickness * 2, 0x8b4513);
+        const bottomBar = this.add.rectangle(0, abacusHeight / 2, abacusWidth, frameThickness * 2, 0x8b4513);
+        const leftBar = this.add.rectangle(-abacusWidth / 2, 0, frameThickness * 2, abacusHeight, 0x8b4513);
+        const rightBar = this.add.rectangle(abacusWidth / 2, 0, frameThickness * 2, abacusHeight, 0x8b4513);
+
+        abacusContainer.add([topBar, bottomBar, leftBar, rightBar]);
+
+        const zone = this.add.zone(0, 0, abacusWidth + frameThickness*4, abacusHeight + frameThickness*4)
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true });
+
+        abacusContainer.add(zone);
+
+        zone.on('pointerdown', () => {
+            this.cameras.main.fade(300, 0, 0, 0);
+            this.time.delayedCall(300, () => {
+                this.scene.start('ClassroomScene');
+            });
+        });
+
+        abacusContainer.setAngle(5);
+    }
+
 }
