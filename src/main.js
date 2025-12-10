@@ -33,7 +33,6 @@ const config = {
   },
   scene: [
     // uvoz scen
-    ClassroomScene,
     MenuScene,
     LabScene,
     WorkspaceScene,
@@ -52,7 +51,8 @@ const config = {
     PhysicsSelectionScene,
     PhysicsPulleyScene,
     AstronomyScene,
-    RadioactiveDecayScene
+    RadioactiveDecayScene,
+    ClassroomScene,
   ],
   physics: {
     default: 'arcade',           

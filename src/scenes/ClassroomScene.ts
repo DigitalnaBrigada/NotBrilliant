@@ -739,18 +739,6 @@ export default class ClassroomScene extends Phaser.Scene {
         return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     private handleResize() {
         this.scene.restart();
     }
