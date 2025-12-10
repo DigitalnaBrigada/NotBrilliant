@@ -19,14 +19,10 @@ import PhysicsPulleyScene from './scenes/physicsPulleyScene';
 import AstronomyScene from "./scenes/astronomyScene.js";
 import RadioactiveDecayScene from "./scenes/radioactiveDecayScene.js";
 import PhysicsSelectionScene from "./scenes/physicsSelectionScene.js";
-<<<<<<< HEAD
 import ClassroomScene from './scenes/ClassroomScene.ts';
-
-=======
 import LogicScene from './scenes/logicScene';
 import DesktopScene from './scenes/desktopScene';
 import LinuxScene from './scenes/linuxScene';
->>>>>>> 1e80b36 (Computer science logic)
 
 const config = {
   type: Phaser.AUTO,            
@@ -58,13 +54,10 @@ const config = {
     PhysicsPulleyScene,
     AstronomyScene,
     RadioactiveDecayScene,
-<<<<<<< HEAD
     ClassroomScene,
-=======
     LogicScene,
     DesktopScene,
     LinuxScene
->>>>>>> 1e80b36 (Computer science logic)
   ],
   physics: {
     default: 'arcade',           

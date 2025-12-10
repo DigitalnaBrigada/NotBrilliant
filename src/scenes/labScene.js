@@ -255,7 +255,7 @@ export default class LabScene extends Phaser.Scene {
     // Odstranjeni gumbi Naloga 1 in Naloga 5
 
     // Dodaj napoj na mizo – center mize, tik nad delovno površino
-    const potion = this.add.image(tableX, tableY-20, 'potion')
+    const potion = this.add.image(tableX +200, tableY-30, 'potion')
       .setOrigin(0.5)
       .setScale(0.35)
       .setInteractive({ useHandCursor: true })
@@ -275,15 +275,12 @@ export default class LabScene extends Phaser.Scene {
 
     //console.log(`${localStorage.getItem('username')}`);
     console.log(JSON.parse(localStorage.getItem('users')));
-<<<<<<< HEAD
     this.createAbacus(this.scale.width, this.scale.height)
-=======
-
 
     // Začetek igre TODO dodat pogoj kdaj se izklopi
     if(localStorage.getItem('lightOn') !== 'true') {
       const darkBg = this.add.rectangle(0, 0, width, height, 0x000000, 0.95).setOrigin(0).setDepth(1000);
-      const dialog = this.add.container(1200, 600).setDepth(1001);
+      const dialog = this.add.container(1000, 500).setDepth(1001);
       const bg = this.add.rectangle(0, 0, 800, 600, 0xFFFFFF, 0.9).setOrigin(0.5);
       bg.setStrokeStyle(2, 0x666666);
       const dialogText = this.add.text(-370, -250,
@@ -311,11 +308,7 @@ export default class LabScene extends Phaser.Scene {
 
               dialog.add([bg, dialogText, closeBtn]);
               this.screenDialog = dialog;
-<<<<<<< HEAD
->>>>>>> 7e7dfac (Computer science bugfixing, adding content and added initial dialog box)
-=======
             }
->>>>>>> 26bcf3e (Added check for completed electric part)
   }
 
     createAbacus(width, height) {
