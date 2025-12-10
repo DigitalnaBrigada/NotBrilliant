@@ -163,7 +163,7 @@ export default class LabScene extends Phaser.Scene {
     });
 
     interactiveZone.on('pointerdown', () => {
-        this.scene.start('WorkspaceScene');
+        // samo miza je, pomiri se
     });
     
     interactiveZone.on('pointerover', () => {
@@ -275,7 +275,42 @@ export default class LabScene extends Phaser.Scene {
 
     //console.log(`${localStorage.getItem('username')}`);
     console.log(JSON.parse(localStorage.getItem('users')));
+<<<<<<< HEAD
     this.createAbacus(this.scale.width, this.scale.height)
+=======
+
+
+    // Začetek igre TODO dodat pogoj kdaj se izklopi
+      const darkBg = this.add.rectangle(0, 0, width, height, 0x000000, 0.95).setOrigin(0).setDepth(1000);
+      const dialog = this.add.container(1200, 600).setDepth(1001);
+      const bg = this.add.rectangle(0, 0, 800, 600, 0xFFFFFF, 0.9).setOrigin(0.5);
+      bg.setStrokeStyle(2, 0x666666);
+      const dialogText = this.add.text(-370, -250,
+                  "You are a researcher at the American (not very successful) secret base Area 51, which has just been attacked by aliens from the distant planet Rupsodia in the FERI-324 galaxy.\n\nYour task is to overcome various challenges and solve the puzzles of all 4 subject (Math, Computer science, Physics and Chemistry) in order to gain access to the exit from Area 51. Fortunately, you have access to advanced technologies and tools that will help you on your way, but first you need to focus on the task ahead of you!\n\nDuring the attack, the aliens disabled the main and backup electricity, your task is to first connect the electrical circuit to restore the light in your office.\nGood luck!",
+                  {
+                  fontFamily: 'Monospace',
+                  fontSize: '22px',
+                  color: '#0000A6',
+                  wordWrap: { width: 750 }
+                  });
+
+              // gumb za zapret
+              const closeBtn = this.add.text(0, 200, 'Ok let\'s go!', {
+                  fontFamily: 'Arial',
+                  fontSize: '16px',
+                  color: '#ffffff',
+                  backgroundColor: '#333333',
+                  padding: { x: 30, y: 16 }
+              }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+              closeBtn.on('pointerdown', () => {
+                  dialog.destroy();
+                  this.screenDialog = null;
+                  this.scene.start('WorkspaceScene');
+              });
+
+              dialog.add([bg, dialogText, closeBtn]);
+              this.screenDialog = dialog;
+>>>>>>> 7e7dfac (Computer science bugfixing, adding content and added initial dialog box)
   }
 
     createAbacus(width, height) {

@@ -12,6 +12,12 @@ export default class LinuxScene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
 
+    // layout velikosti
+    const leftW = Math.floor(width * 0.65);
+    const leftH = height - 110;
+    const leftX = 0;
+    const leftY = 50;
+
     // bg
     this.add.rectangle(0, 0, width, height, 0x0b0b0b).setOrigin(0);
     const leftBg = this.add.rectangle(leftX, leftY, leftW, leftH, 0x020203).setOrigin(0);
@@ -23,12 +29,6 @@ export default class LinuxScene extends Phaser.Scene {
       fontSize: '24px',
       color: '#7efc6a'
     }).setOrigin(0, 0);
-
-    // layout velikosti
-    const leftW = Math.floor(width * 0.65);
-    const leftH = height - 110;
-    const leftX = 0;
-    const leftY = 50;
 
     // prompt/input
     this.promptTextColor = '#7efc6a';
@@ -75,14 +75,14 @@ export default class LinuxScene extends Phaser.Scene {
         matches: (raw) => raw.trim() === 'rm notavirus.exe'
       },
       {
-        text: 'Rename txt file into partialPassword.txt\n("I have upgraded my password so it is made of two pieces")',
+        text: 'Rename txt file into partialKey.txt\n("I have upgraded my key so it is made of two pieces")',
         done: false,
-        matches: (raw) => raw.trim() === 'mv fullPassword.txt partialPassword.txt'
+        matches: (raw) => raw.trim() === 'mv fullKey.txt partialKey.txt'
       },
       {
-        text: 'Reveal password 🐈',
+        text: 'Reveal key 🐈',
         done: false,
-        matches: (raw) => raw.trim() === 'cat partialPassword.txt'
+        matches: (raw) => raw.trim() === 'cat partialKey.txt'
       }
     ];
 
@@ -154,7 +154,7 @@ export default class LinuxScene extends Phaser.Scene {
 
     this.setupKeyboardInput();
 
-    this.txtFile = 'fullPassword.txt';
+    this.txtFile = 'fullKey.txt';
     this.virusFile = 'notavirus.exe';
   }
 
@@ -228,12 +228,19 @@ export default class LinuxScene extends Phaser.Scene {
 
     case 'cat': {
         const target = args.join(' ');
-        if (target === 'partialPassword.txt') {
-        outputLines = [
-            'NAME="Erik\'s java dev environment variable a"',
-            'a = 17'
-        ];
-        } else if (target === 'fullPassword.txt') {
+        if (target === 'partialKey.txt') {
+          if(this.virusFile){
+            outputLines = [
+              'NAME="V!rus c▩rrrӜ◇ti▓n d€tec+█▒"',
+              'a = ▓☢'
+            ];
+          } else{
+            outputLines = [
+              'NAME="Erik\'s java dev environment variable a"',
+              'a = 17'
+            ];
+          }
+        } else if (target === 'fullKey.txt') {
             outputLines = ['Fill out the tasks in order!'];
         } else {
             outputLines = [`cat: ${target}: No such file or directory`];
@@ -258,11 +265,11 @@ export default class LinuxScene extends Phaser.Scene {
 
     case 'mv':
         const target = args.join(' ');
-        if (target === ('fullPassword.txt partialPassword.txt')) {
+        if (target === ('fullKey.txt partialKey.txt')) {
         outputLines = [
             'Renamed file'
         ];
-        this.txtFile = 'partialPassword.txt';
+        this.txtFile = 'partialKey.txt';
         } else {
             outputLines = [`mv: ${target}: Incorrect usage`];
         }
@@ -340,6 +347,7 @@ export default class LinuxScene extends Phaser.Scene {
       }
     }
   }
+
 
   clearTerminal() {
     this.terminalHistory.forEach(item => item.destroy());

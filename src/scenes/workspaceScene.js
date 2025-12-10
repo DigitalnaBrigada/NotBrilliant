@@ -160,7 +160,7 @@ export default class WorkspaceScene extends Phaser.Scene {
       return { bg, text };
     };
 
-    makeButton(width - 140, 75, 'Lestvica', () => this.scene.start('ScoreboardScene', { cameFromMenu: false }));
+    makeButton(width - 140, 75, 'Lestvica', () => {localStorage.setItem('lightOn', true); this.scene.start('ScoreboardScene', { cameFromMenu: false })});
     makeButton(width - 140, 125, 'Preveri krog', () => this.checkCircuit());
     makeButton(width - 140, 175, 'Simulacija', () => {
       this.connected = this.graph.simulate()
@@ -670,6 +670,7 @@ export default class WorkspaceScene extends Phaser.Scene {
 
     this.checkText.setStyle({ color: '#00aa00' });
     this.checkText.setText('Čestitke! Krog je pravilen.');
+    localStorage.setItem('lightOn', true);
     this.addPoints(10);
 
     if (currentChallenge.theory) {
@@ -678,6 +679,7 @@ export default class WorkspaceScene extends Phaser.Scene {
     else {
       this.checkText.setStyle({ color: '#00aa00' });
       this.checkText.setText('Čestitke! Krog je pravilen.');
+      ocalStorage.setItem('lightOn', true);
       this.addPoints(10);
       this.time.delayedCall(2000, () => this.nextChallenge());
     }
@@ -705,6 +707,7 @@ export default class WorkspaceScene extends Phaser.Scene {
     }
     else {
       this.promptText.setText('Vse naloge so uspešno opravljene! Čestitke!');
+      ocalStorage.setItem('lightOn', true);
       localStorage.removeItem('currentChallengeIndex');
     }
   }

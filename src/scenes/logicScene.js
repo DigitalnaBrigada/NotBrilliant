@@ -34,6 +34,8 @@ export default class LogicScene extends Phaser.Scene {
     this.load.image('bulb_on', 'src/components/bulb_on.png');
     this.load.image('OR_gate', 'src/components/OR_gate.png');
     this.load.image('AND_gate', 'src/components/AND_gate.png');
+    this.load.image('NOR_gate', 'src/components/NOR_gate.png');
+    this.load.image('NAND_gate', 'src/components/NAND_gate.png');
     this.load.image('voltmeter', 'src/components/voltmeter.png');
   }
 
@@ -215,54 +217,128 @@ export default class LogicScene extends Phaser.Scene {
     this.updateLogicNodePositions(lvl1_bulb);*/
 
     // lvl 2
-    const lvl2_node1 = this.createComponent(500, 280, 'Node', 0x00cc66);
+    const lvl2_node1 = this.createComponent(200, 50, 'Node', 0x00cc66);
     lvl2_node1.setData('isStatic', true);
     this.placedComponents.push(lvl2_node1);
     this.updateLogicNodePositions(lvl2_node1);
 
-    const lvl2_node2 = this.createComponent(500, 450, 'Node', 0x00cc66);
+    const lvl2_node2 = this.createComponent(200, 175, 'Node', 0x00cc66);
     lvl2_node2.setData('isStatic', true);
     this.placedComponents.push(lvl2_node2);
     this.updateLogicNodePositions(lvl2_node2);
 
-    const lvl2_node3 = this.createComponent(500, 700, 'Node', 0x00cc66);
+    const lvl2_node3 = this.createComponent(200, 300, 'Node', 0x00cc66);
     lvl2_node3.setData('isStatic', true);
     this.placedComponents.push(lvl2_node3);
     this.updateLogicNodePositions(lvl2_node3);
 
-    const lvl2_node4 = this.createComponent(500, 900, 'Node', 0x00cc66);
+    const lvl2_node4 = this.createComponent(200, 425, 'Node', 0x00cc66);
     lvl2_node4.setData('isStatic', true);
     this.placedComponents.push(lvl2_node4);
     this.updateLogicNodePositions(lvl2_node4);
 
-    const lvl2_OR_gate1 = this.createComponent(750, 400, 'OR_gate', 0x00cc66);
+    const lvl2_node5 = this.createComponent(200, 550, 'Node', 0x00cc66);
+    lvl2_node5.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node5);
+    this.updateLogicNodePositions(lvl2_node5);
+
+    const lvl2_node6 = this.createComponent(200, 675, 'Node', 0x00cc66);
+    lvl2_node6.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node6);
+    this.updateLogicNodePositions(lvl2_node6);
+
+    const lvl2_node7 = this.createComponent(200, 800, 'Node', 0x00cc66);
+    lvl2_node7.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node7);
+    this.updateLogicNodePositions(lvl2_node7);
+
+    const lvl2_node8 = this.createComponent(200, 925, 'Node', 0x00cc66);
+    lvl2_node8.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node8);
+    this.updateLogicNodePositions(lvl2_node8);
+
+    const lvl2_OR_gate1 = this.createComponent(350, 125, 'OR_gate', 0x00cc66);
     lvl2_OR_gate1.setData('isStatic', true);
     this.placedComponents.push(lvl2_OR_gate1);
     this.updateLogicNodePositions(lvl2_OR_gate1);
 
-    const lvl2_AND_gate = this.createComponent(750, 800, 'AND_gate', 0x00cc66);
+    const lvl2_AND_gate = this.createComponent(400, 350, 'AND_gate', 0x00cc66);
     lvl2_AND_gate.setData('isStatic', true);
     this.placedComponents.push(lvl2_AND_gate);
     this.updateLogicNodePositions(lvl2_AND_gate);
 
-    const lvl2_AND_gate2 = this.createComponent(1000, 600, 'AND_gate', 0x00cc66);
+    const lvl2_NAND_gate2 = this.createComponent(600, 250, 'NAND_gate', 0x00cc66);
+    lvl2_NAND_gate2.setData('isStatic', true);
+    this.placedComponents.push(lvl2_NAND_gate2);
+    this.updateLogicNodePositions(lvl2_NAND_gate2);
+
+    const lvl2_NOR_gate1 = this.createComponent(400, 655, 'NOR_gate', 0x00cc66);
+    lvl2_NOR_gate1.setData('isStatic', true);
+    this.placedComponents.push(lvl2_NOR_gate1);
+    this.updateLogicNodePositions(lvl2_NOR_gate1);
+
+    const lvl2_NAND_gate = this.createComponent(400, 860, 'NAND_gate', 0x00cc66);
+    lvl2_NAND_gate.setData('isStatic', true);
+    this.placedComponents.push(lvl2_NAND_gate);
+    this.updateLogicNodePositions(lvl2_NAND_gate);
+
+    const lvl2_NOR_gate2 = this.createComponent(600, 760, 'NOR_gate', 0x00cc66);
+    lvl2_NOR_gate2.setData('isStatic', true);
+    this.placedComponents.push(lvl2_NOR_gate2);
+    this.updateLogicNodePositions(lvl2_NOR_gate2);
+
+    const lvl2_node9 = this.createComponent(400, 475, 'Node', 0x00cc66);
+    lvl2_node9.setData('isStatic', true);
+    this.placedComponents.push(lvl2_node9);
+    this.updateLogicNodePositions(lvl2_node9);
+
+    const lvl2_NOR_gate3 = this.createComponent(600, 565, 'NOR_gate', 0x00cc66);
+    lvl2_NOR_gate3.setData('isStatic', true);
+    this.placedComponents.push(lvl2_NOR_gate3);
+    this.updateLogicNodePositions(lvl2_NOR_gate3);
+
+    const lvl2_AND_gate2 = this.createComponent(800, 325, 'AND_gate', 0x00cc66);
     lvl2_AND_gate2.setData('isStatic', true);
     this.placedComponents.push(lvl2_AND_gate2);
     this.updateLogicNodePositions(lvl2_AND_gate2);
 
-    const lvl2_bulb = this.createComponent(1200, 600, 'Bulb', 0x00cc66);
+    const lvl2_AND_gate3 = this.createComponent(800, 725, 'AND_gate', 0x00cc66);
+    lvl2_AND_gate3.setData('isStatic', true);
+    this.placedComponents.push(lvl2_AND_gate3);
+    this.updateLogicNodePositions(lvl2_AND_gate3);
+
+    const lvl2_AND_gate4 = this.createComponent(1000, 480, 'AND_gate', 0x00cc66);
+    lvl2_AND_gate4.setData('isStatic', true);
+    this.placedComponents.push(lvl2_AND_gate4);
+    this.updateLogicNodePositions(lvl2_AND_gate4);
+
+    const lvl2_bulb = this.createComponent(1200, 480, 'Bulb', 0x00cc66);
     lvl2_bulb.setData('isStatic', true);
     this.placedComponents.push(lvl2_bulb);
     this.updateLogicNodePositions(lvl2_bulb);
 
     // Connections table
-    this.logicalConnections.push([0, 4]) // node1 - OR
-    this.logicalConnections.push([1, 4]) // node2 - OR
-    this.logicalConnections.push([2, 5]) // node3 - AND 1
-    this.logicalConnections.push([3, 5]) // node4 - AND 1
-    this.logicalConnections.push([4, 6]) // OR - AND 2
-    this.logicalConnections.push([5, 6]) // AND 1 - AND 2
-    this.logicalConnections.push([6, 7]) // AND 2 - Bulb
+    this.logicalConnections.push([0, 8]) // node1 - OR
+    this.logicalConnections.push([1, 8]) // node2 - OR
+    this.logicalConnections.push([2, 9]) // node3 - AND 1
+    this.logicalConnections.push([3, 9]) // node4 - AND 1
+    this.logicalConnections.push([4, 11])
+    this.logicalConnections.push([5, 11])
+    this.logicalConnections.push([6, 12])
+    this.logicalConnections.push([7, 12]) 
+    this.logicalConnections.push([8, 10])
+    this.logicalConnections.push([9, 10])
+    this.logicalConnections.push([11, 13])
+    this.logicalConnections.push([12, 13])
+    this.logicalConnections.push([4, 15]) 
+    this.logicalConnections.push([14, 15]) 
+    this.logicalConnections.push([13, 17])
+    this.logicalConnections.push([15, 17])  
+    this.logicalConnections.push([9, 16])
+    this.logicalConnections.push([10, 16]) 
+    this.logicalConnections.push([16, 18])
+    this.logicalConnections.push([17, 18]) 
+    this.logicalConnections.push([18, 19]) 
     this.updateLogicalConnectors();
     
     const backButton = this.add.text(12, 10, '↩ Back', {
@@ -390,7 +466,7 @@ updateLogicalConnectors() {
     }
 
     console.log(comp2.getData('type'));
-    if(comp2.getData('type') === 'Bulb' || comp2.getData('type') === 'OR_gate' || comp2.getData('type') === 'AND_gate'){
+    if(comp2.getData('type') != 'Node'){
       this.updateNode(idx1, comp2, nodeOn);
     }
     
@@ -492,111 +568,6 @@ updateLogicalConnectors() {
     let bulbIterator = 0;
 
     switch (type) {
-      case 'baterija':
-        id = "bat_" + this.getRandomInt(1000, 9999);
-        comp = new Battery(
-          id,
-          new Node(id + '_start', -40, 0),
-          new Node(id + '_end', 40, 0),
-          3.3
-        );
-        comp.type = 'battery';
-        comp.localStart = { x: -40, y: 0 };
-        comp.localEnd = { x: 40, y: 0 };
-        componentImage = this.add.image(0, 0, 'baterija')
-          .setOrigin(0.5)
-          .setDisplaySize(100, 100);
-        component.add(componentImage);
-        component.setData('logicComponent', comp);
-        break;
-
-      case 'upor':
-        id = "res_" + this.getRandomInt(1000, 9999);
-        comp = new Resistor(
-          id,
-          new Node(id + '_start', -40, 0),
-          new Node(id + '_end', 40, 0),
-          1.5
-        )
-        comp.type = 'resistor';
-        comp.localStart = { x: -40, y: 0 };
-        comp.localEnd = { x: 40, y: 0 };
-        componentImage = this.add.image(0, 0, 'upor')
-          .setOrigin(0.5)
-          .setDisplaySize(100, 100);
-        component.add(componentImage);
-        component.setData('logicComponent', comp)
-        break;
-
-      case 'svetilka':
-        id = "bulb_" + this.getRandomInt(1000, 9999);
-        comp = new Bulb(
-          id,
-          new Node(id + '_start', -40, 0),
-          new Node(id + '_end', 40, 0)
-        );
-        comp.type = 'bulb';
-        comp.localStart = { x: -40, y: 0 };
-        comp.localEnd = { x: 40, y: 0 };
-        componentImage = this.add.image(0, 0, 'svetilka')
-          .setOrigin(0.5)
-          .setDisplaySize(100, 100);
-        component.add(componentImage);
-        component.setData('logicComponent', comp);
-        break;
-
-      case 'stikalo-on':
-        id = "switch_" + this.getRandomInt(1000, 9999);
-        comp = new Switch(
-          id,
-          new Node(id + "_start", -40, 0),
-          new Node(id + "_end", 40, 0),
-          true
-        )
-        comp.type = 'switch';
-        comp.localStart = { x: -40, y: 0 };
-        comp.localEnd = { x: 40, y: 0 };
-        componentImage = this.add.image(0, 0, 'stikalo-on')
-          .setOrigin(0.5)
-          .setDisplaySize(100, 100);
-        component.add(componentImage);
-        component.setData('logicComponent', comp)
-        break;
-
-      case 'stikalo-off':
-        id = "switch_" + this.getRandomInt(1000, 9999);
-        comp = new Switch(
-          id,
-          new Node(id + "_start", -40, 0),
-          new Node(id + "_end", 40, 0),
-          false
-        )
-        comp.type = 'switch';
-        comp.localStart = { x: -40, y: 0 };
-        comp.localEnd = { x: 40, y: 0 };
-        componentImage = this.add.image(0, 0, 'stikalo-off')
-          .setOrigin(0.5)
-          .setDisplaySize(100, 100);
-        component.add(componentImage);
-        component.setData('logicComponent', comp)
-        break;
-
-      case 'žica':
-        id = "wire_" + this.getRandomInt(1000, 9999);
-        comp = new Wire(
-          id,
-          new Node(id + '_start', -40, 0),
-          new Node(id + '_end', 40, 0)
-        );
-        comp.type = 'wire';
-        comp.localStart = { x: -40, y: 0 };
-        comp.localEnd = { x: 40, y: 0 };
-        componentImage = this.add.image(0, 0, 'žica')
-          .setOrigin(0.5)
-          .setDisplaySize(100, 100);
-        component.add(componentImage);
-        component.setData('logicComponent', comp);
-        break;
       case 'Node':
         id = "node_" + nodeIterator++;
         comp = new LogicalNode(
@@ -607,12 +578,13 @@ updateLogicalConnectors() {
         comp.type = 'Node';
         comp.localStart = { x: x, y: y };
         comp.localEnd = { x: x, y: y };
-        componentImage = this.add.image(0, 0, 'node_off')
+        let randomState = Math.random() < 0.5 ? 'off' : 'on';
+        componentImage = this.add.image(0, 0, randomState === 'on' ? 'node_on' : 'node_off')
           .setOrigin(0.5)
           .setDisplaySize(200, 200);
         component.add(componentImage);
         component.setData('logicComponent', comp);
-        component.setData('nodeState', 'off');
+        component.setData('nodeState', randomState);
         break;
       case 'Bulb':
         id = "bulb_" + bulbIterator++;
@@ -650,6 +622,24 @@ updateLogicalConnectors() {
         component.setData('nodeState', 'off');
         component.setData('PoweredBy', null);
         break;
+        case 'NOR_gate':
+        id = "NOR_gate" + bulbIterator++;
+        comp = new LogicalBulb(
+          id,
+          new Node(id + '_start', x, y),
+          new Node(id + '_end', x, y)
+        );
+        comp.type = 'NOR_gate';
+        comp.localStart = { x: x, y: y };
+        comp.localEnd = { x: x, y: y };
+        componentImage = this.add.image(0, 0, 'NOR_gate')
+          .setOrigin(0.5)
+          .setDisplaySize(200, 200);
+        component.add(componentImage);
+        component.setData('logicComponent', comp);
+        component.setData('nodeState', 'on');
+        component.setData('PoweredBy', null);
+        break;
       case 'AND_gate':
         id = "AND_gate" + bulbIterator++;
         comp = new LogicalBulb(
@@ -669,14 +659,25 @@ updateLogicalConnectors() {
         component.setData('Powered1st', null);
         component.setData('Powered2nd', null);
         break;
-      case 'voltmeter':
-        id = "voltmeter_" + this.getRandomInt(1000, 9999);
-        componentImage = this.add.image(0, 0, 'voltmeter')
+      case 'NAND_gate':
+        id = "NAND_gate" + bulbIterator++;
+        comp = new LogicalBulb(
+          id,
+          new Node(id + '_start', x, y),
+          new Node(id + '_end', x, y)
+        );
+        comp.type = 'NAND_gate';
+        comp.localStart = { x: x, y: y };
+        comp.localEnd = { x: x, y: y };
+        componentImage = this.add.image(0, 0, 'NAND_gate')
           .setOrigin(0.5)
-          .setDisplaySize(100, 100);
+          .setDisplaySize(200, 200);
         component.add(componentImage);
-        component.setData('logicComponent', null)
-        break;
+        component.setData('logicComponent', comp);
+        component.setData('nodeState', 'on');
+        component.setData('Powered1st', null);
+        component.setData('Powered2nd', null);
+      break;
     }
 
     component.on('pointerover', () => {
@@ -801,6 +802,20 @@ updateLogicalConnectors() {
         }
       }
       break;
+    case 'NOR_gate':
+      if(nodeOn){
+        component.setData('PoweredBy', nodeId);
+        component.setData('nodeState', 'off');
+        console.log("~| Gate OFF", component.getData('PoweredBy'));
+      }
+      else{
+        if(component.getData('PoweredBy') === nodeId){
+          component.setData('PoweredBy', null);
+          component.setData('nodeState', 'on');
+          console.log("~| Gate ON");
+        }
+      }
+      break;
     case 'AND_gate':
       if(nodeOn){
         if(component.getData('Powered1st') === null && component.getData('Powered2nd') === null){
@@ -827,6 +842,35 @@ updateLogicalConnectors() {
           component.setData('Powered1st', null);
           component.setData('nodeState', 'off');
           console.log("& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        }
+      }
+      break;
+      case 'NAND_gate':
+      if(nodeOn){
+        if(component.getData('Powered1st') === null && component.getData('Powered2nd') === null){
+          component.setData('Powered1st', nodeId);
+          console.log("~& Gate ON", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered1st') === null && component.getData('Powered2nd') !== nodeId){
+          component.setData('Powered1st', nodeId);
+          component.setData('nodeState', 'off');
+          console.log("~& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered2nd') === null && component.getData('Powered1st') !== nodeId){
+          component.setData('Powered2nd', nodeId);
+          component.setData('nodeState', 'off');
+          console.log("~& Gate OFF", component.getData('Powered1st'), component.getData('Powered2nd'));
+        }
+      } else{
+        if(component.getData('Powered1st') === null && component.getData('Powered2nd') === null){
+          component.setData('nodeState', 'on');
+          console.log("~& Gate ON", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered1st') !== null && component.getData('Powered2nd') === nodeId){
+          component.setData('Powered2nd', null);
+          component.setData('nodeState', 'on');
+          console.log("~& Gate ON", component.getData('Powered1st'), component.getData('Powered2nd'));
+        } else if (component.getData('Powered2nd') !== null && component.getData('Powered1st') === nodeId){
+          component.setData('Powered1st', null);
+          component.setData('nodeState', 'on');
+          console.log("~& Gate ON", component.getData('Powered1st'), component.getData('Powered2nd'));
         }
       }
       break;

@@ -76,14 +76,27 @@ export default class DesktopScene extends Phaser.Scene {
   }
 
   onIconClicked(key, label) {
+    //Dialog za javo
+    const cx = this.cameras.main.centerX;
+    const cy = this.cameras.main.centerY - 80;
+    const dialog = this.add.container(cx, cy).setDepth(1001);
+    this.screenDialog = null;
     switch(key){
         case 'icon1':
+            if(dialog != null){
+                dialog.destroy();
+                this.screenDialog = null;
+            }
             this.cameras.main.fade(300, 0, 0, 0);
             this.time.delayedCall(300, () => {
                 this.scene.start('LinuxScene');
             });
             break;
         case 'icon2':
+            if(dialog != null){
+                dialog.destroy();
+                this.screenDialog = null;
+            }
             this.cameras.main.fade(300, 0, 0, 0);
             this.time.delayedCall(300, () => {
                 this.scene.start('LogicScene');
@@ -93,9 +106,6 @@ export default class DesktopScene extends Phaser.Scene {
             if (this.screenDialog) return;
             const dlgW = 820;
             const dlgH = 280;
-            const cx = this.cameras.main.centerX;
-            const cy = this.cameras.main.centerY - 80;
-            const dialog = this.add.container(cx, cy).setDepth(1001);
 
             // ozadje
             const bg = this.add.rectangle(0, 0, dlgW, dlgH, 0x0b0b0e, 0.96).setOrigin(0.5);
@@ -104,8 +114,10 @@ export default class DesktopScene extends Phaser.Scene {
             innerBg.setStrokeStyle(2, 0x666666);
 
             // tekst
+            //this.key = '~~b +\"\"+ (a&b) +\"\"+ (a/b) +\"\"+ (b<<1) +\"\"+ (b|2)'; // 3 1 5 6 3
+            this.key = '(a&b) +\"\"+ (b<<1)'; // 1 6
             const dialogText = this.add.text(-dlgW/2 + 18, -dlgH/2 + 26,
-                "public class Main {\n    publ!c sstatic void main(String[] args)[\n        int a = ▓☢; // Binary: 1◻◆Ӝ▩\n        int b = ✗Ϟ; //  Binary: @0Ӝ◇1\n\n        // PASSKEY!!!\n        $ystem.out.println(~~b +\"\"+ (a&b) +\"\"+ (a/b) +\"\"+ (b<<1) +\"\"+ (b|2));\n     }\n}\n\n\n\nCompilation failed due to error(s).",
+                "public class Main {\n    publ!c sstatic void main(String[] args)[\n        int a = ▓☢; // Binary: 1◻◆Ӝ▩\n        int b = ✗Ϟ; //  Binary: @0Ӝ◇1\n\n        // PARTIAL PASSKEY!!!\n        $ystem.out.println("+this.key+");\n     }\n}\n\n\n\nCompilation failed due to error(s).",
                 {
                 fontFamily: 'Monospace',
                 fontSize: '18px',
