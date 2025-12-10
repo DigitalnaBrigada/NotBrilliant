@@ -36,7 +36,6 @@ const config = {
     createContainer: true
   },
   scene: [
-      EscapeScene,
     // uvoz scen
     MenuScene,
     LabScene,
@@ -61,7 +60,7 @@ const config = {
     LogicScene,
     DesktopScene,
     LinuxScene,
-      // EscapeScene
+    EscapeScene
   ],
   physics: {
     default: 'arcade',           

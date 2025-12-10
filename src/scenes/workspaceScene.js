@@ -167,6 +167,10 @@ export default class WorkspaceScene extends Phaser.Scene {
       if (this.connected == 1) {
         this.checkText.setStyle({ color: '#00aa00' });
         this.checkText.setText('Električni tok je sklenjen');
+        localStorage.setItem('lightOn', true);
+        this.cameras.main.fade(300, 0, 0, 0);
+        this.time.delayedCall(1000, () => {
+          this.scene.start('LabScene')});
         this.sim = true;
         return;
       }
@@ -713,7 +717,7 @@ export default class WorkspaceScene extends Phaser.Scene {
     }
     else {
       this.promptText.setText('Vse naloge so uspešno opravljene! Čestitke!');
-      ocalStorage.setItem('lightOn', true);
+      LocalStorage.setItem('lightOn', true);
       this.cameras.main.fade(300, 0, 0, 0);
       this.time.delayedCall(300, () => {
       this.scene.start('LabScene')});
