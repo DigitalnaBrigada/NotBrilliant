@@ -10,6 +10,11 @@ import TestScene from './scenes/testScene';
 import LoginScene from './scenes/loginScene';
 import ScoreboardScene from './scenes/scoreboardScene';
 import WorkspaceScene from './scenes/workspaceScene';
+import ChemistryScene1 from './scenes/chemistryScene1';
+import ChemistryScene2 from './scenes/chemistryScene2';
+import ChemistryScene3 from './scenes/chemistryScene3';
+import ChemistryScene4 from './scenes/chemistryScene4';
+import ChemistryScene5 from './scenes/chemistryScene5';
 import PhysicsPulleyScene from './scenes/physicsPulleyScene';
 import AstronomyScene from "./scenes/astronomyScene.js";
 import RadioactiveDecayScene from "./scenes/radioactiveDecayScene.js";
@@ -29,6 +34,11 @@ const config = {
     MenuScene,
     LabScene,
     WorkspaceScene,
+    ChemistryScene1,
+    ChemistryScene2,
+    ChemistryScene3,
+    ChemistryScene4,
+    ChemistryScene5,
     PreloadScene,
     UIScene,
     TestScene,

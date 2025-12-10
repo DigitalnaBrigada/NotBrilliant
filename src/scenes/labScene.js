@@ -17,8 +17,7 @@ export default class LabScene extends Phaser.Scene {
         this.load.image('avatar9', 'src/avatars/avatar9.png');
         this.load.image('avatar10', 'src/avatars/avatar10.png');
         this.load.image('avatar11', 'src/avatars/avatar11.png');
-
-
+        this.load.image('potion', 'src/assets/potion.png');
         this.load.image('telescope', 'src/assets/telescope.png');
   }
 
@@ -200,6 +199,23 @@ export default class LabScene extends Phaser.Scene {
         .on('pointerdown', () => {
             this.scene.start('ScoreboardScene', {cameFromMenu: true});
         });
+
+    // Odstranjeni gumbi Naloga 1 in Naloga 5
+
+    // Dodaj napoj na mizo – center mize, tik nad delovno površino
+    const potion = this.add.image(tableX, tableY-20, 'potion')
+      .setOrigin(0.5)
+      .setScale(0.35)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => {
+        this.scene.start('ChemistryScene1');
+      });
+    // senca pod napojem za občutek globine
+    const shadow = this.add.ellipse(tableX, tableY + 70, 140, 26, 0x000000, 0.12);
+    shadow.setDepth(potion.depth - 1);
+    // hover efekt
+    potion.on('pointerover', () => { this.tweens.add({ targets: [potion, shadow], scale: 0.38, duration: 180 }); });
+    potion.on('pointerout',  () => { this.tweens.add({ targets: [potion, shadow], scale: 0.35, duration: 180 }); });
 
     // this.input.keyboard.on('keydown-ESC', () => {
     //     this.scene.start('MenuScene');
